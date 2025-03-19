@@ -199,7 +199,7 @@ export default function Nav() {
                 {navigation.categories.map((category) => (
                   <TabPanel
                     key={category.name}
-                    className="space-y-10 px-4 pt-10 pb-8"
+                    className="space-y-10 text-center px-4 pt-10 pb-8"
                   >
                     <div className="grid grid-cols-2 gap-x-4">
                       {category.featured.map((item) => (
@@ -463,13 +463,13 @@ export default function Nav() {
                       src="https://tailwindcss.com/plus-assets/img/flags/flag-zimbabwe.svg"
                       className="block h-auto w-5 shrink-0"
                     />
-                    <span className="ml-3 block text-sm font-medium">CAD</span>
-                    <span className="sr-only">, change currency</span>
+                    {/* <span className="ml-3 block text-sm font-medium">CAD</span>
+                    <span className="sr-only">, change currency</span> */}
                   </a>
                 </div>
 
                 {/* Search */}
-                <div className="flex lg:ml-6">
+                {/* <div className="flex lg:ml-6">
                   <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Search</span>
                     <MagnifyingGlassIcon
@@ -477,10 +477,10 @@ export default function Nav() {
                       className="size-6"
                     />
                   </a>
-                </div>
+                </div> */}
 
                 {/* Cart */}
-                <div className="ml-4 flow-root lg:ml-6">
+                {/* <div className="ml-4 flow-root lg:ml-6">
                   <a href="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
@@ -491,7 +491,7 @@ export default function Nav() {
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

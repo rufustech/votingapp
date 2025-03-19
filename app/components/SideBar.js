@@ -37,28 +37,38 @@ function SideBar() {
           </div>
         </form>
         <ul className="space-y-2">
-          <li>
-          
-              <div className="ml-3">Top Contestants</div>
-                <p className="ml-3">Yollanda</p>
-                <p className="ml-3">Yollanda</p>
-                <p className="ml-3">Yollanda</p>
-                <p className="ml-3">Yollanda</p>
-                <p className="ml-3">Yollanda</p>
 
-          
-          </li>
-          <li>
-          
-          <div className="ml-3">Current Pageants</div>
-            <p className="ml-3">Miss Zimbo</p>
-            <p className="ml-3">Miss Zimbo</p>
-            <p className="ml-3">Miss Zimbo</p>
-            <p className="ml-3">Miss Zimbo</p>
-            <p className="ml-3">Miss Zimbo</p>
 
+<div class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" class="block w-full px-4 py-2 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+    Top Contestants
+    </div>
+    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    Yollanda
+    </a>
+    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+        Map these please
+    </a>
+    <a href="#" class="block w-full px-4 py-2 rounded-b-lg cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+        Download
+    </a>
+</div>
+
+<div class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" class="block w-full px-4 py-2 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+    Current Pageants
+    </div>
+    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    Miss Zimbo
+    </a>
+    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+        Map these please Pageants Please
+    </a>
+    <a href="#" class="block w-full px-4 py-2 rounded-b-lg cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+        Download
+    </a>
+</div>  
       
-      </li>
           <li>
             <button
               type="button"
@@ -80,7 +90,7 @@ function SideBar() {
                 />
               </svg>
               <span className="flex-1 ml-3 text-left whitespace-nowrap">
-                Pages
+                Dashboard
               </span>
               <svg
                 aria-hidden="true"
@@ -99,10 +109,10 @@ function SideBar() {
             <ul id="dropdown-pages" className="hidden py-2 space-y-2">
               <li>
                 <a
-                  href="#"
-                  className="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-gray-600 dark:hover:bg-gray-700"
+                  href="/dashboard"
+                  className="flex items-center text-orange-600 p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-gray-600 dark:hover:bg-gray-700"
                 >
-                  Settings
+                  Dashboard
                 </a>
               </li>
               <li>
@@ -276,8 +286,8 @@ function SideBar() {
         <ul className="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
           <li>
             <a
-              href="#"
-              className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+              href="/dashboard"
+              className="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-orange-600 group"
             >
               <svg
                 aria-hidden="true"
@@ -293,7 +303,7 @@ function SideBar() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="ml-3">Docs</span>
+              <span className="ml-3">Dashboard</span>
             </a>
           </li>
           <li>

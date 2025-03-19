@@ -1,8 +1,8 @@
 import React from "react";
 
-function ModelCard() {
+function ModelCard(props) {
   return (
-    <div className="lg:w-80 bg-white border border-gray-200 shadow-sm dark:bg-orange-400 dark:border-gray-700">
+    <div className="lg:w-80 bg-white border border-gray-200 shadow-gray-400 shadow-md dark:bg-orange-400 dark:border-gray-400">
       <div className="">
         <img
           className="h-96 w-full object-cover"
@@ -13,11 +13,11 @@ function ModelCard() {
       <div className="p-5">
         <a href="#">
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            1, 001
+            <span className="">Votes:</span> {props.votes}
           </h5>
         </a>
         <h4 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Yollanda Chimbarami
+          {props.name}
         </h4>
         <a
           href="#"
@@ -40,6 +40,7 @@ function ModelCard() {
             />
           </svg>
         </a>
+        <p>{props.pageantId}</p>
       </div>
     </div>
   );
