@@ -4,7 +4,16 @@ import { useEffect, useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
 import SideBar from "./components/SideBar";
-import ModelCard from "./components/modelComponents/ModelCard";
+
+import { Poppins } from "next/font/google";
+import Models from "./components/Models";
+
+const poppins = Poppins({
+  weight: [ "700"], // Ensure the correct weights
+  subsets: ["latin"],
+  variable: "--font-poppins",
+});
+
 
 export default function Home() {
    const [models, setModels] = useState([]);
@@ -72,9 +81,9 @@ export default function Home() {
                 <div className="grid grid-cols-12 gap-5 justify-center items-center">
                   <div className="col-span-12 lg:col-span-6">
                     <div className="lg:px-7">
-                      <h1 className="uppercase text-4xl md:text-5xl leading-tight font-medium mb-2">
-                        Pageant Crown Vote
-                      </h1>
+                    <h1 className={`${poppins.className} uppercase text-4xl md:text-5xl text-orange-600 leading-tight font-medium mb-2`}>
+  Pageant Crown Vote
+</h1>
                       <p className="text-lg leading-normal opacity-75 my-6">
                         Completely network collaborative web services via
                         user-centric initiatives. Quickly promote sticky testing
@@ -86,7 +95,7 @@ export default function Home() {
                         to connect great companies and great talent.
                       </p>
                       <div className="mt-12">
-                        <button className="bg-gray-900 text-white hover:bg-opacity-90 dark:bg-blue-600 dark:text-black rounded-md px-7 py-3 transition">
+                        <button className="bg-gray-900 text-white hover:bg-opacity-90 dark:bg-orange-600 hover:bg-orange-700 dark:text-white rounded-md px-7 py-2.5 transition">
                           Pageants
                         </button>
                       </div>
@@ -104,20 +113,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {models.length > 0 ? (
-                models.map((model) => (
-                  <ModelCard
-                    key={model._id}
-                    name={model.name}
-                    votes={model.votes} // Ensure your API provides this
-                    pageantId={model.pageantId}
-                  />
-                ))
-              ) : (
-                <p className="text-center col-span-full">No models found.</p>
-              )}
-            </div>
+            <Models />
               
          
               <Dashboard />

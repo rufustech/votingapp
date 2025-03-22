@@ -1,6 +1,25 @@
-import React from "react";
+import { useEffect, useState } from "react";
 
 function SideBar() {
+
+  const [models, setModels] = useState([]);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/models");
+            if (!response.ok) {
+                throw new Error("Failed to fetch models");
+            }
+            const data = await response.json();
+            setModels(data);
+        } catch (error) {
+            console.error("Error fetching models:", error);
+        }
+    };
+    fetchModels();
+}, []);
+
   return (
     <aside
       className="fixed top-10 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0"
@@ -39,23 +58,27 @@ function SideBar() {
         <ul className="space-y-2">
 
 
-<div class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-    <div  aria-current="true" class="block w-full px-4 py-2 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+<div class=" text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" class="block w-full px-4 py-3 text-white text-[18px] bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-600 dark:border-gray-600">
     Top Contestants
     </div>
-    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-    Yollanda
-    </a>
-    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-        Map these please
-    </a>
-    <a href="#" class="block w-full px-4 py-2 rounded-b-lg cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-        Download
-    </a>
+
+{models.slice(0, 5).map((model)=>(
+  // eslint-disable-next-line react/jsx-key
+  <a href="/model/${models:_id}" className="block w-full px-2 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    <div className="flex w-full">
+        <span className="w-[70%] text-[13px]">{model.name}</span>
+        <span className="w-[25%] text-[13px]">Votes:{model.votes}</span>
+    </div>
+</a>
+
+))}
+ 
+ 
 </div>
 
-<div class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-    <div  aria-current="true" class="block w-full px-4 py-2 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+<div class=" text-md font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" class="block w-full px-4 py-4 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
     Current Pageants
     </div>
     <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
