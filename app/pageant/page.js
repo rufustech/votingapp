@@ -19,7 +19,7 @@ function page() {
                   <div className="col-span-12 lg:col-span-6">
                     <div className="lg:px-7">
                       <h1 className="uppercase text-4xl md:text-5xl leading-tight font-medium mb-2">
-                        Pageant Crown Vote
+                        Miss Zimbabwe 2025
                       </h1>
                       <p className="text-lg leading-normal opacity-75 my-6">
                         Completely network collaborative web services via

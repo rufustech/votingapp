@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 
 function SideBar() {
@@ -58,36 +59,42 @@ function SideBar() {
         <ul className="space-y-2">
 
 
-<div class=" text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-    <div  aria-current="true" class="block w-full px-4 py-3 text-white text-[18px] bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-600 dark:border-gray-600">
+<div className=" text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" className="block w-full px-4 py-3 text-white text-[18px] bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-600 dark:border-gray-600">
     Top Contestants
     </div>
 
-{models.slice(0, 5).map((model)=>(
-  // eslint-disable-next-line react/jsx-key
-  <a href="/model/${models:_id}" className="block w-full px-2 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-    <div className="flex w-full">
+    {[...models]
+  .sort((a, b) => b.votes - a.votes) // Sort descending by votes
+  .slice(0, 5)
+  .map((model) => (
+    <a
+      key={model._id}
+      href={`/model/${model._id}`}
+      className="block w-full px-2 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
+    >
+      <div className="flex w-full">
         <span className="w-[70%] text-[13px]">{model.name}</span>
-        <span className="w-[25%] text-[13px]">Votes:{model.votes}</span>
-    </div>
-</a>
-
+        <span className="w-[25%] text-[13px]">Votes: {model.votes}</span>
+      </div>
+    </a>
 ))}
+
  
  
 </div>
 
-<div class=" text-md font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-    <div  aria-current="true" class="block w-full px-4 py-4 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
+<div className=" text-md font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    <div  aria-current="true" className="block w-full px-4 py-4 text-white bg-blue-700 border-b border-gray-200 rounded-t-lg cursor-pointer dark:bg-gray-800 dark:border-gray-600">
     Current Pageants
     </div>
-    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    <a href="#" className="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
     Miss Zimbo
     </a>
-    <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    <a href="#" className="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
         Map these please Pageants Please
     </a>
-    <a href="#" class="block w-full px-4 py-2 rounded-b-lg cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+    <a href="#" className="block w-full px-4 py-2 rounded-b-lg cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
         Download
     </a>
 </div>  

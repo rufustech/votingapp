@@ -6,45 +6,80 @@ export default function Dashboard() {
   const [models, setModels] = useState([]);
   const [form, setForm] = useState({ name: "", bio: "", images: "", pageantId: "" });
   const [editingModel, setEditingModel] = useState(null);
+  const [pageants, setPageants] = useState([]);
 
-  // Fetch models from the backend
+  const resetForm = () => {
+    setForm({ name: "", bio: "", images: "", pageantId: "" });
+    setEditingModel(null);
+  };
+
   useEffect(() => {
     fetch("http://localhost:5000/api/models")
       .then((res) => res.json())
       .then((data) => setModels(data))
       .catch((error) => console.error("Error fetching models:", error));
+
+    fetch("http://localhost:5000/api/pageants")
+      .then((res) => res.json())
+      .then((data) => setPageants(data))
+      .catch((error) => console.error("Error fetching pageants:", error));
   }, []);
 
-  // Handle form input changes
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Submit form (Create or Update)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const method = editingModel ? "PUT" : "POST";
-    const url = editingModel ? `/api/models/${editingModel._id}` : "/api/models";
+  const handleCreate = async () => {
+    const payload = {
+      ...form,
+      images: [form.images],
+    };
 
-    const response = await fetch(url, {
-      method,
+    const response = await fetch("http://localhost:5000/api/models", {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const newModel = await response.json();
+      setModels((prev) => [...prev, newModel]);
+      resetForm();
+    } else {
+      const errorText = await response.text();
+      console.error("Create failed:", response.status, errorText);
+    }
+  };
+
+  const handleUpdate = async () => {
+    const payload = {
+      ...form,
+      images: [form.images],
+    };
+
+    const response = await fetch(`http://localhost:5000/api/models/${editingModel._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
     if (response.ok) {
       const updatedModel = await response.json();
       setModels((prev) =>
-        editingModel
-          ? prev.map((m) => (m._id === updatedModel._id ? updatedModel : m))
-          : [...prev, updatedModel]
+        prev.map((m) => (m._id === updatedModel._id ? updatedModel : m))
       );
-      setForm({ name: "", bio: "", images: "", pageantId: "" });
-      setEditingModel(null);
+      resetForm();
+    } else {
+      const errorText = await response.text();
+      console.error("Update failed:", response.status, errorText);
     }
   };
 
-  // Delete a model
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    editingModel ? await handleUpdate() : await handleCreate();
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this model?")) return;
     const response = await fetch(`/api/models/${id}`, { method: "DELETE" });
@@ -52,18 +87,17 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Model Dashboard</h1>
+    <div className="container mx-auto max-w-6xl px-4 py-8 mt-24">
+      <h1 className="text-3xl font-bold text-blue-700 mb-6 text-center">Model Dashboard</h1>
 
-      {/* Model Form */}
-      <form onSubmit={handleSubmit} className="mb-6 bg-white p-4 shadow rounded">
+      <form onSubmit={handleSubmit} className="mb-10 bg-white p-6 rounded-lg shadow-md space-y-4">
         <input
           type="text"
           name="name"
           placeholder="Model Name"
           value={form.name}
           onChange={handleChange}
-          className="block w-full p-2 border mb-2"
+          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
           required
         />
         <textarea
@@ -71,7 +105,7 @@ export default function Dashboard() {
           placeholder="Bio"
           value={form.bio}
           onChange={handleChange}
-          className="block w-full p-2 border mb-2"
+          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
           required
         />
         <input
@@ -80,43 +114,58 @@ export default function Dashboard() {
           placeholder="Image URL"
           value={form.images}
           onChange={handleChange}
-          className="block w-full p-2 border mb-2"
+          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
         />
-        <input
-          type="text"
+        <select
           name="pageantId"
-          placeholder="Pageant ID"
           value={form.pageantId}
           onChange={handleChange}
-          className="block w-full p-2 border mb-2"
+          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
           required
-        />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        >
+          <option value="">Select Pageant</option>
+          {pageants.map((p) => (
+            <option key={p._id} value={p._id}>{p.name}</option>
+          ))}
+        </select>
+
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded shadow"
+        >
           {editingModel ? "Update Model" : "Create Model"}
         </button>
       </form>
 
-      {/* Models List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {models.map((model) => (
-          <div key={model._id} className="bg-gray-100 p-4 shadow rounded">
-            <h2 className="text-lg font-semibold">{model.name}</h2>
-            <p className="text-sm">{model.bio}</p>
-            <p className="text-sm text-gray-500">Pageant ID: {model.pageantId}</p>
-            <img src={model.images} alt={model.name} className="w-full h-32 object-cover mt-2" />
-            <div className="mt-2 flex space-x-2">
+          <div key={model._id} className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">{model.name}</h2>
+            <p className="text-gray-600 text-sm mb-1">{model.bio}</p>
+            <p className="text-gray-400 text-sm mb-3">Pageant: {model.pageantId?.name}</p>
+            <img
+              src={model.images}
+              alt={model.name}
+              className="w-full h-40 object-cover rounded mb-4"
+            />
+            <div className="flex justify-between">
               <button
                 onClick={() => {
                   setEditingModel(model);
-                  setForm(model);
+                  setForm({
+                    name: model.name,
+                    bio: model.bio,
+                    images: model.images,
+                    pageantId: model.pageantId?._id || "",
+                  });
                 }}
-                className="bg-yellow-500 text-white px-3 py-1 rounded"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(model._id)}
-                className="bg-red-500 text-white px-3 py-1 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
               >
                 Delete
               </button>
