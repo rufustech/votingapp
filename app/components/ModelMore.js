@@ -104,6 +104,7 @@ function ModelMore() {
                             key={model._id}
                             name={model.name}
                             votes={model.votes}
+                            bio={model.bio}
                             pageantId={model.pageantId?.name}
                             onVote={() => handleVote(model._id)}
                         />

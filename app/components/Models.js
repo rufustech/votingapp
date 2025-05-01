@@ -37,10 +37,13 @@ function Models() {
         const fetchModels = async () => {
             try {
                 const response = await fetch("http://localhost:5000/api/models");
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch models");
                 }
                 const data = await response.json();
+                console.log(data);
+                
                 setModels(data);
             } catch (error) {
                 console.error("Error fetching models:", error);
@@ -94,6 +97,7 @@ function Models() {
                         <ModelCard
                             key={model._id}
                             name={model.name}
+                            bio={model.bio}
                             votes={model.votes}
                             pageantId={model.pageantId?.name}
                             onVote={() => handleVote(model._id)}
