@@ -1,6 +1,6 @@
+"use client";
 import Header from "../components/Header";
 import Models from "../components/Models";
-import Nav from "../components/Nav";
 import SideBar from "../components/SideBar";
 
 export default function Page() {
