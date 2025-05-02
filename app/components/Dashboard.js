@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import { urls } from "../constants";
 
 export default function Dashboard() {
   const [models, setModels] = useState([]);
@@ -14,12 +15,12 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/models")
+    fetch(`${urls.url}/api/models`)
       .then((res) => res.json())
       .then((data) => setModels(data))
       .catch((error) => console.error("Error fetching models:", error));
 
-    fetch("http://localhost:5000/api/pageants")
+    fetch(`${urls.url}/api/pageants`)
       .then((res) => res.json())
       .then((data) => setPageants(data))
       .catch((error) => console.error("Error fetching pageants:", error));
@@ -35,7 +36,7 @@ export default function Dashboard() {
       images: [form.images],
     };
 
-    const response = await fetch("http://localhost:5000/api/models", {
+    const response = await fetch(`${urls.url}/api/models`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -57,7 +58,7 @@ export default function Dashboard() {
       images: [form.images],
     };
 
-    const response = await fetch(`http://localhost:5000/api/models/${editingModel._id}`, {
+    const response = await fetch(`${urls.url}/api/models/${editingModel._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

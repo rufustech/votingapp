@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import { Poppins } from "next/font/google";
 import Models from "./components/Models";
 import ModelMore from "./components/ModelMore";
+import { urls } from "./constants";
 
 const poppins = Poppins({
   weight: ["700"],
@@ -23,7 +24,7 @@ export default function Home() {
   useEffect(() => {
     const fetchModels = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/models");
+        const response = await fetch(`${urls.url}/api/models`);
         if (!response.ok) throw new Error("Failed to fetch models");
         const data = await response.json();
         setModels(data);

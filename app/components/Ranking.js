@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VoteModal from '../components/Voting/VoteModal';
+import { urls } from '../constants';
 
 const MAX_VOTES_PER_DAY = 8;
 
@@ -37,7 +38,7 @@ function Ranking() {
   useEffect(() => {
     const fetchModels = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/models");
+        const response = await fetch(`${urls.url}/api/models`);
         if (!response.ok) throw new Error("Failed to fetch models");
         const data = await response.json();
         setModels(data);
@@ -72,7 +73,7 @@ function Ranking() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/models/${modelId}/vote`, {
+      const response = await fetch(`${urls.url}/api/models/${modelId}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

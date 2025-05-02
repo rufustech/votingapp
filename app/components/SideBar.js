@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
+import { urls } from "../constants";
 
 function SideBar() {
 
@@ -8,7 +9,7 @@ function SideBar() {
   useEffect(() => {
     const fetchModels = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/models");
+            const response = await fetch(`${urls.url}/api/models`);
             if (!response.ok) {
                 throw new Error("Failed to fetch models");
             }
