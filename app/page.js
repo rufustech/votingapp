@@ -56,7 +56,7 @@ export default function Home() {
   <div className="flex flex-col lg:flex-row gap-6 min-h-[500px]">
     {/* HERO LEFT - 3/4 */}
     <div
-  className="relative bg-cover bg-center border-l-4 dark:border-white border-yellow-400 rounded-l-xl  overflow-hidden shadow-xl flex-1"
+  className="relative bg-cover bg-center border-l-4 dark:border-white border-yellow-400 rounded-l-xl py-4 md:py-0 overflow-hidden shadow-xl flex-1"
   style={{ backgroundImage: 'url("/.jpg")' }}
 >
 <div className="absolute inset-0  bg-opacity-100" />
@@ -68,7 +68,7 @@ export default function Home() {
 
   <p className="mt-4 sm:mt-6 text-gray-600 dark:text-gray-100 text-base ">
     Celebrating the elegance, intelligence, and cultural pride of Zimbabwean women.
-    The contestant with the most votes wins the prestigious People's Choice Award.
+    The contestant with the most votes wins the prestigious People&apos;s Choice Award.
   </p>
 
   <div className="mt-6 space-y-5">
@@ -140,7 +140,7 @@ export default function Home() {
 
 
     {/* MODELS SECTION */}
-    <section className="mt-12">
+    <section className="my-12">
       {/* <Models models={models} /> */}
 
       <ModelMore models={models} />  

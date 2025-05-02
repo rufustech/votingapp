@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import VoteModal from '../components/Voting/VoteModal';
 import { urls } from '../constants';
 
-const MAX_VOTES_PER_DAY = 8;
+const MAX_VOTES_PER_DAY = 2;
 
 const getVotesData = () => {
   if (typeof window === "undefined") return { date: "", votes: 0 };

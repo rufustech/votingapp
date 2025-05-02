@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ModelsCard from "./modelComponents/ModelsCard";
 import { urls } from "../constants";
 
-const MAX_VOTES_PER_DAY = 8;
+const MAX_VOTES_PER_DAY = 2;
 
 // Safe localStorage functions
 const getVotesData = () => {
