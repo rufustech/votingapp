@@ -1,38 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import VoteModal from '../components/Voting/VoteModal'; // Adjust the import path as necessary
-
+import VoteModal from '../components/Voting/VoteModal';
 
 const MAX_VOTES_PER_DAY = 8;
 
-
-// Helper function to reset votes if it's a new day
 const getVotesData = () => {
-    const today = new Date().toISOString().split("T")[0];
-    const storedData = JSON.parse(localStorage.getItem("voteData")) || { date: today, votes: 0 };
+  if (typeof window === "undefined") return { date: "", votes: 0 };
+  const today = new Date().toISOString().split("T")[0];
+  const storedData = JSON.parse(localStorage.getItem("voteData")) || { date: today, votes: 0 };
 
-    if (storedData.date !== today) {
-        localStorage.setItem("voteData", JSON.stringify({ date: today, votes: 0 }));
-        return { date: today, votes: 0 };
-    }
+  if (storedData.date !== today) {
+    localStorage.setItem("voteData", JSON.stringify({ date: today, votes: 0 }));
+    return { date: today, votes: 0 };
+  }
 
-    return storedData;
+  return storedData;
 };
 
 const getPaidVotes = () => {
-    return parseInt(localStorage.getItem("paidVotes") || "0", 10);
+  if (typeof window === "undefined") return 0;
+  return parseInt(localStorage.getItem("paidVotes") || "0", 10);
 };
 
 const setPaidVotes = (votes) => {
+  if (typeof window !== "undefined") {
     localStorage.setItem("paidVotes", votes);
+  }
 };
-
 
 function Ranking() {
   const [models, setModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState(null);
   const [showModal, setShowModal] = useState(false);
-   const [votesLeft, setVotesLeft] = useState(MAX_VOTES_PER_DAY - getVotesData().votes);
-          const [paidVotes, setPaidVotesState] = useState(getPaidVotes());
+  const [votesLeft, setVotesLeft] = useState(MAX_VOTES_PER_DAY);
+  const [paidVotes, setPaidVotesState] = useState(0);
 
   useEffect(() => {
     const fetchModels = async () => {
@@ -49,14 +49,14 @@ function Ranking() {
     fetchModels();
   }, []);
 
-   useEffect(() => {
-              if (typeof window !== "undefined") {
-                  const voteData = getVotesData();
-                  const paid = getPaidVotes();
-                  setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
-                  setPaidVotesState(paid);
-              }
-          }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const voteData = getVotesData();
+      const paid = getPaidVotes();
+      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
+      setPaidVotesState(paid);
+    }
+  }, []);
 
   const sortedModels = [...models].sort((a, b) => b.votes - a.votes);
 
@@ -67,45 +67,43 @@ function Ranking() {
 
   const handleVote = async (modelId) => {
     if (votesLeft <= 0) {
-        alert("You've reached your vote limit for today. Try again tomorrow.");
-        return;
+      alert("You've reached your vote limit for today. Try again tomorrow.");
+      return;
     }
 
     try {
-        const response = await fetch(`http://localhost:5000/api/models/${modelId}/vote`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        });
+      const response = await fetch(`http://localhost:5000/api/models/${modelId}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            alert(errorData.message || "Failed to vote.");
-            return;
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message || "Failed to vote.");
+        return;
+      }
 
-        // Update local votes count
-        const newVotesData = getVotesData();
-        newVotesData.votes += 1;
-        localStorage.setItem("voteData", JSON.stringify(newVotesData));
+      const newVotesData = getVotesData();
+      newVotesData.votes += 1;
+      localStorage.setItem("voteData", JSON.stringify(newVotesData));
 
-        // Update UI
-        setVotesLeft(MAX_VOTES_PER_DAY - newVotesData.votes);
-        setModels((prevModels) =>
-            prevModels.map((model) =>
-                model._id === modelId ? { ...model, votes: model.votes + 1 } : model
-            )
-        );
+      setVotesLeft(MAX_VOTES_PER_DAY - newVotesData.votes);
+      setModels((prevModels) =>
+        prevModels.map((model) =>
+          model._id === modelId ? { ...model, votes: model.votes + 1 } : model
+        )
+      );
     } catch (error) {
-        console.error("Error voting:", error);
+      console.error("Error voting:", error);
     }
-};
+  };
 
   return (
     <div className="container mx-auto mt-20 max-w-6xl px-4 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Rankings List */}
       <div>
         <h2 className="text-2xl font-bold text-blue-600 mb-2">🏆 Leaderboard</h2>
-        <h3 className='mb-4 text-gray-600 text-lg'>Free Votes Remaining: </h3>
+        <h3 className="mb-4 text-gray-600 text-lg">Free Votes Remaining: {votesLeft}</h3>
         <ul className="space-y-4">
           {sortedModels.map((model, index) => (
             <li
@@ -133,21 +131,21 @@ function Ranking() {
             </li>
           ))}
         </ul>
+
         {showModal && selectedModel && (
-       <VoteModal
-       open={showModal}
-       handleClose={() => setShowModal(false)}
-       onFreeVote={() => {
-         alert(`You voted for ${selectedModel?.name} (free)!`);
-         setShowModal(false);
-       }}
-       onPaidVote={() => {
-         alert(`Redirecting to Stripe for ${selectedModel?.name}...`);
-         setShowModal(false);
-       }}
-     />
-     
-      )}
+          <VoteModal
+            open={showModal}
+            handleClose={() => setShowModal(false)}
+            onFreeVote={() => {
+              alert(`You voted for ${selectedModel?.name} (free)!`);
+              setShowModal(false);
+            }}
+            onPaidVote={() => {
+              alert(`Redirecting to Stripe for ${selectedModel?.name}...`);
+              setShowModal(false);
+            }}
+          />
+        )}
       </div>
 
       {/* Ad Space */}
@@ -159,7 +157,6 @@ function Ranking() {
           </p>
         </div>
 
-        {/* Dummy Ads */}
         <div className="space-y-4">
           <div className="w-full h-32 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center text-white font-semibold text-lg">
             FashionWorld – Style Redefined
@@ -178,8 +175,6 @@ function Ranking() {
           </button>
         </div>
       </div>
-
-    
     </div>
   );
 }
