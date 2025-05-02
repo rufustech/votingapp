@@ -3,7 +3,7 @@ import Models from "../components/Models";
 import Nav from "../components/Nav";
 import SideBar from "../components/SideBar";
 
-function page() {
+export default function Page() {
   return (
     <div>
       <div className="antialiased bg-gray-50 dark:bg-gray-900">
@@ -61,4 +61,4 @@ function page() {
   );
 }
 
-export default page;
+
