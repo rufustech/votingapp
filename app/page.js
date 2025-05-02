@@ -56,17 +56,17 @@ export default function Home() {
   <div className="flex flex-col lg:flex-row gap-6 min-h-[500px]">
     {/* HERO LEFT - 3/4 */}
     <div
-  className="relative bg-cover bg-center border-l-4 border-yellow-400 rounded-l-xl  overflow-hidden shadow-xl flex-1"
+  className="relative bg-cover bg-center border-l-4 dark:border-white border-yellow-400 rounded-l-xl  overflow-hidden shadow-xl flex-1"
   style={{ backgroundImage: 'url("/.jpg")' }}
 >
 <div className="absolute inset-0  bg-opacity-100" />
 
 <div className="relative z-10 flex flex-col justify-center h-full px-4 sm:px-6 md:px-12 max-w-2xl">
-  <h1 className={`${poppins.className} text-gray-800 text-3xl sm:text-5xl md:text-5xl   uppercase `}>
+  <h1 className={`${poppins.className} text-gray-800 text-3xl sm:text-5xl md:text-5xl dark:text-white  uppercase `}>
     Miss Zimbabwe 2025!
   </h1>
 
-  <p className="mt-4 sm:mt-6 text-gray-600 text-base ">
+  <p className="mt-4 sm:mt-6 text-gray-600 dark:text-gray-100 text-base ">
     Celebrating the elegance, intelligence, and cultural pride of Zimbabwean women.
     The contestant with the most votes wins the prestigious People's Choice Award.
   </p>
@@ -77,7 +77,7 @@ export default function Home() {
     </p>
 
     <div>
-      <p className="text-gray-700 font-semibold mb-2">🔥 Boost with Extra Votes:</p>
+      <p className="text-gray-700 dark:text-white font-semibold mb-2">🔥 Boost with Extra Votes:</p>
       <div className="flex gap-3 flex-wrap">
         {votePackages.map((pkg) => (
           <button

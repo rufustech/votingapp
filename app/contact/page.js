@@ -19,8 +19,8 @@ export default function Contact() {
   return (
     <div className="container mx-auto max-w-4xl mt-16 px-6 py-20">
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-blue-700 mb-4">Contact Us</h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <h1 className="text-4xl font-bold dark:text-gray-200 text-blue-700 mb-4">Contact Us</h1>
+        <p className="text-gray-600 dark:text-gray-200 text-lg max-w-2xl mx-auto">
           Have a question, suggestion, or want to advertise? Reach out and we’ll get back to you shortly.
         </p>
       </div>

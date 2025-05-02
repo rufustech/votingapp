@@ -23,7 +23,7 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote })
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={modalStyle}>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "black" }}>
           Cast Your Vote
         </Typography>
 

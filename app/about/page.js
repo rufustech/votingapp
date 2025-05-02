@@ -6,8 +6,8 @@ export default function About() {
   return (
     <div className="container mx-auto max-w-5xl mt-16 px-6 py-20">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-blue-700 mb-4">About Us</h1>
-        <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold dark:text-gray-200 text-blue-700 mb-4">About Us</h1>
+        <p className="text-gray-600 dark:text-white text-lg max-w-3xl mx-auto">
           We make voting easy, fun, and impactful &ndash; from crowning beauty queens to recognizing corporate excellence.
         </p>
       </div>
@@ -24,11 +24,11 @@ export default function About() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why We Exist</h2>
-          <p className="text-gray-600 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Why We Exist</h2>
+          <p className="text-gray-600 dark:text-gray-200 mb-4">
             We built this platform to empower organizations and event organizers with a seamless, secure, and engaging voting experience. Whether it&apos;s a Year-End Awards ceremony at a corporate firm, a glamorous beauty pageant, or a fan-voted music contest &mdash; we&apos;ve got you covered.
           </p>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-200">
             Our mission is simple: enable real-time, transparent voting with beautiful design and unbeatable ease of use. No paper ballots, no bias &mdash; just pure results.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function About() {
               className="object-contain"
             />
           </div>
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Beauty Pageants</h3>
+          <h3 className="text-lg font-semibold text-blue-600  mb-2">Beauty Pageants</h3>
           <p className="text-gray-500 text-sm">Empowering the audience to crown their queen with live digital voting.</p>
         </div>
 

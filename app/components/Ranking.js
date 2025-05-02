@@ -103,8 +103,8 @@ function Ranking() {
     <div className="container mx-auto mt-20 max-w-6xl px-4 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Rankings List */}
       <div>
-        <h2 className="text-2xl font-bold text-blue-600 mb-2">🏆 Leaderboard</h2>
-        <h3 className="mb-4 text-gray-600 text-lg">Free Votes Remaining: {votesLeft}</h3>
+        <h2 className="text-2xl font-bold dark:text-blue-500 text-blue-600 mb-2">🏆 Leaderboard</h2>
+        <h3 className="mb-4 text-gray-600 dark:text-white text-lg">Free Votes Remaining: {votesLeft}</h3>
         <ul className="space-y-4">
           {sortedModels.map((model, index) => (
             <li
