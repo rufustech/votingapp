@@ -6,6 +6,7 @@ import { Poppins } from "next/font/google";
 import Models from "./components/Models";
 import ModelMore from "./components/ModelMore";
 import { urls } from "./constants";
+import Hero from "./components/Hero";
 
 const poppins = Poppins({
   weight: ["700"],
@@ -48,7 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       {/* <Header /> */}
-
+{/* <Hero /> */}
       <main className="pt-16 px-4">
   <div className="container mx-auto lg:px-20">
     {/* HERO SECTION */}
@@ -98,7 +99,7 @@ export default function Home() {
     {/* RIGHT SIDE - Top Contestants & Pageants */}
     <div className="flex flex-col lg:w-1/4 gap-6">
       {/* Leaderboard */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md flex-1">
+      <div className="bg-white dark:bg-gray-800 dark:shadow-white p-4 rounded-lg dark:shadow-sm shadow-md flex-1">
         <h2 className="text-2xl font-bold mb-4 text-[#9c27b0]">🔥 Leaderboard</h2>
         <ul className="divide-y divide-gray-200 dark:divide-gray-600">
           {[...models]
@@ -119,7 +120,7 @@ export default function Home() {
       </div>
 
       {/* Current Pageants */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md flex-1">
+      <div className="bg-white dark:bg-gray-800 dark:shadow-white dark:shadow-sm p-4 rounded-lg shadow-md flex-1">
         <h2 className="text-xl font-bold mb-4 text-[#9c27b0]">🎉 Current Pageants</h2>
         <ul className="space-y-2">
           <li className="border p-2 rounded hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer">
