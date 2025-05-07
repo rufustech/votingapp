@@ -98,6 +98,7 @@ function Models() {
                             key={model._id}
                             name={model.name}
                             bio={model.bio}
+                            images={model.images}
                             votes={model.votes}
                             pageantId={model.pageantId?.name}
                             onVote={() => handleVote(model._id)}

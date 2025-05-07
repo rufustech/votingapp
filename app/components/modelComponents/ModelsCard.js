@@ -42,7 +42,7 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-export default function ModelsCard({name, votes, pageantId, onVote, bio} ) {
+export default function ModelsCard({name, votes, pageantId, onVote, bio, images} ) {
   const [expanded, setExpanded] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -102,7 +102,7 @@ const handlePaidVote = () => {
       <CardMedia
         component="img"
         height="194"
-        image="https://www.missintercontinental.de/wp-content/uploads/2022/08/miss-intercontinental-2022-zimbabwe-yollanda-elizabeth-chimbarami-sedcard-600x900.jpg"
+        image={images[0]}
         alt={name}
         sx={{
             width: 200,

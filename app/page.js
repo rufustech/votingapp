@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Header from "./components/Header";
 import { Poppins } from "next/font/google";
-import Models from "./components/Models";
 import ModelMore from "./components/ModelMore";
 import { urls } from "./constants";
 import Hero from "./components/Hero";
@@ -57,7 +55,7 @@ export default function Home() {
   <div className="flex flex-col lg:flex-row gap-6 min-h-[500px]">
     {/* HERO LEFT - 3/4 */}
     <div
-  className="relative bg-cover bg-center border-l-4 dark:border-white border-yellow-400 rounded-l-xl py-4 md:py-0 overflow-hidden shadow-xl flex-1"
+  className="relative bg-cover bg-center border-l-1 dark:border-white border-[#9c27b0] rounded-l-xl py-4 md:py-0 overflow-hidden shadow-md flex-1"
   style={{ backgroundImage: 'url("/.jpg")' }}
 >
 <div className="absolute inset-0  bg-opacity-100" />
@@ -73,7 +71,7 @@ export default function Home() {
   </p>
 
   <div className="mt-6 space-y-5">
-    <p className="inline-block bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg font-medium text-md shadow-sm border border-yellow-300 w-fit">
+    <p className="inline-block bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg font-medium text-md shadow-sm border border-[#9c27b0] w-fit">
       🎖️ Vote for your favorite model (1 free vote/day)
     </p>
 

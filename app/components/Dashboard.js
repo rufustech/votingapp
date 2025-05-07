@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { urls } from "../constants";
 
 export default function Dashboard() {
   const [models, setModels] = useState([]);
-  const [form, setForm] = useState({ name: "", bio: "", images: "", pageantId: "" });
+  const [form, setForm] = useState({ name: "", bio: "", images: [], pageantId: "" });
   const [editingModel, setEditingModel] = useState(null);
   const [pageants, setPageants] = useState([]);
 
   const resetForm = () => {
-    setForm({ name: "", bio: "", images: "", pageantId: "" });
+    setForm({ name: "", bio: "", images: [], pageantId: "" });
     setEditingModel(null);
   };
 
   useEffect(() => {
     fetch(`${urls.url}/api/models`)
       .then((res) => res.json())
-      .then((data) => setModels(data))
+      .then(setModels)
       .catch((error) => console.error("Error fetching models:", error));
 
     fetch(`${urls.url}/api/pageants`)
       .then((res) => res.json())
-      .then((data) => setPageants(data))
+      .then(setPageants)
       .catch((error) => console.error("Error fetching pageants:", error));
   }, []);
 
@@ -30,16 +30,34 @@ export default function Dashboard() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleCreate = async () => {
-    const payload = {
-      ...form,
-      images: [form.images],
-    };
+  const handleUpload = async (e) => {
+    const files = e.target.files;
+    const formData = new FormData();
+    for (let file of files) {
+      formData.append("images", file);
+    }
+  
+    const res = await fetch(`${urls.url}/api/upload`, {
+      method: "POST",
+      body: formData,
+    });
+  
+    const data = await res.json();
+    console.log("Uploaded image data:", data); // ✅ Debug
+  
+    if (data.images && Array.isArray(data.images)) {
+      setForm({ ...form, images: data.images });
+    } else {
+      console.error("Upload failed: unexpected format", data);
+    }
+  };
+  
 
+  const handleCreate = async () => {
     const response = await fetch(`${urls.url}/api/models`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(form),
     });
 
     if (response.ok) {
@@ -47,32 +65,25 @@ export default function Dashboard() {
       setModels((prev) => [...prev, newModel]);
       resetForm();
     } else {
-      const errorText = await response.text();
-      console.error("Create failed:", response.status, errorText);
+      console.error("Create failed:", response.status, await response.text());
     }
   };
 
   const handleUpdate = async () => {
-    const payload = {
-      ...form,
-      images: [form.images],
-    };
-
     const response = await fetch(`${urls.url}/api/models/${editingModel._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(form),
     });
 
     if (response.ok) {
-      const updatedModel = await response.json();
+      const updated = await response.json();
       setModels((prev) =>
-        prev.map((m) => (m._id === updatedModel._id ? updatedModel : m))
+        prev.map((m) => (m._id === updated._id ? updated : m))
       );
       resetForm();
     } else {
-      const errorText = await response.text();
-      console.error("Update failed:", response.status, errorText);
+      console.error("Update failed:", response.status, await response.text());
     }
   };
 
@@ -83,8 +94,13 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this model?")) return;
-    const response = await fetch(`/api/models/${id}`, { method: "DELETE" });
-    if (response.ok) setModels(models.filter((m) => m._id !== id));
+
+    const res = await fetch(`${urls.url}/api/models/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setModels((prev) => prev.filter((m) => m._id !== id));
+    } else {
+      console.error("Delete failed:", res.status, await res.text());
+    }
   };
 
   return (
@@ -98,7 +114,7 @@ export default function Dashboard() {
           placeholder="Model Name"
           value={form.name}
           onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          className="w-full p-3 border rounded"
           required
         />
         <textarea
@@ -106,27 +122,28 @@ export default function Dashboard() {
           placeholder="Bio"
           value={form.bio}
           onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          className="w-full p-3 border rounded"
           required
         />
+    
         <input
-          type="text"
-          name="images"
-          placeholder="Image URL"
-          value={form.images}
-          onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleUpload}
         />
         <select
           name="pageantId"
           value={form.pageantId}
           onChange={handleChange}
-          className="w-full p-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+          className="w-full p-3 border rounded"
           required
         >
           <option value="">Select Pageant</option>
           {pageants.map((p) => (
-            <option key={p._id} value={p._id}>{p.name}</option>
+            <option key={p._id} value={p._id}>
+              {p.name}
+            </option>
           ))}
         </select>
 
@@ -140,15 +157,19 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {models.map((model) => (
-          <div key={model._id} className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition">
-            <h2 className="text-xl font-bold text-gray-800 mb-1">{model.name}</h2>
-            <p className="text-gray-600 text-sm mb-1">{model.bio}</p>
-            <p className="text-gray-400 text-sm mb-3">Pageant: {model.pageantId?.name}</p>
-            <img
-              src={model.images}
-              alt={model.name}
-              className="w-full h-40 object-cover rounded mb-4"
-            />
+          <div key={model._id} className="bg-white rounded-lg shadow-md p-5">
+            <h2 className="text-xl font-bold mb-1">{model.name}</h2>
+            <p className="text-sm mb-1">{model.bio}</p>
+            <p className="text-xs text-gray-500 mb-3">
+              Pageant: {model.pageantId?.name}
+            </p>
+            {model.images?.[0] && (
+              <img
+                src={model.images[0]}
+                alt={model.name}
+                className="w-full h-40 object-cover rounded mb-4"
+              />
+            )}
             <div className="flex justify-between">
               <button
                 onClick={() => {

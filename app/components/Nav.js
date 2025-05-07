@@ -89,7 +89,7 @@ export default function Nav() {
         </div>
       </Dialog>
 
-      <header className="relative bg-white">
+      <header className="relative bg-white shadow shadow-[#9c27b0]">
         <div className="relative overflow-hidden bg-[#9c27b0] h-10 w-full">
           <p className="absolute whitespace-nowrap text-white text-lg font-medium animate-marquee px-4">
             BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
