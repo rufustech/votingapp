@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { urls } from "../constants";
 
 export default function Dashboard() {
@@ -8,11 +8,14 @@ export default function Dashboard() {
   const [form, setForm] = useState({ name: "", bio: "", images: [], pageantId: "" });
   const [editingModel, setEditingModel] = useState(null);
   const [pageants, setPageants] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const resetForm = () => {
     setForm({ name: "", bio: "", images: [], pageantId: "" });
     setEditingModel(null);
   };
+
+  const getPageantName = (id) => pageants.find(p => p._id === id)?.name || "Unknown";
 
   useEffect(() => {
     fetch(`${urls.url}/api/models`)
@@ -31,59 +34,106 @@ export default function Dashboard() {
   };
 
   const handleUpload = async (e) => {
-    const files = e.target.files;
-    const formData = new FormData();
-    for (let file of files) {
-      formData.append("images", file);
-    }
+    try {
+      const files = Array.from(e.target.files);
+      if (!files.length) {
+        console.warn("No files selected.");
+        return;
+      }
   
-    const res = await fetch(`${urls.url}/api/upload`, {
-      method: "POST",
-      body: formData,
-    });
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("images", file);
+      });
   
-    const data = await res.json();
-    console.log("Uploaded image data:", data); // ✅ Debug
+      console.log("Uploading files:", files);
   
-    if (data.images && Array.isArray(data.images)) {
-      setForm({ ...form, images: data.images });
-    } else {
-      console.error("Upload failed: unexpected format", data);
+      const res = await fetch(`${urls.url}/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      const text = await res.text(); // Read raw response
+      console.log("Raw response text:", text);
+  
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+  
+      const data = JSON.parse(text);
+      console.log("Parsed JSON:", data);
+  
+      if (!data.success || !Array.isArray(data.images)) {
+        throw new Error("Upload response missing images.");
+      }
+  
+      setForm((prev) => ({
+        ...prev,
+        images: [...prev.images, ...data.images],
+      }));
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload images. Please try again.\n" + error.message);
     }
   };
   
 
   const handleCreate = async () => {
-    const response = await fetch(`${urls.url}/api/models`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    if (!form.name || !form.bio || !form.pageantId) {
+      alert("Please fill in all required fields");
+      return;
+    }
 
-    if (response.ok) {
-      const newModel = await response.json();
-      setModels((prev) => [...prev, newModel]);
+    if (!form.images.length) {
+      alert("Please upload at least one image");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${urls.url}/api/models`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message || "Failed to create model");
+
+      setModels((prev) => [...prev, data.model]);
       resetForm();
-    } else {
-      console.error("Create failed:", response.status, await response.text());
+      alert("Model created successfully!");
+    } catch (error) {
+      console.error("Create failed:", error);
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUpdate = async () => {
-    const response = await fetch(`${urls.url}/api/models/${editingModel._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${urls.url}/api/models/${editingModel._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    if (response.ok) {
-      const updated = await response.json();
+      if (!res.ok) throw new Error("Update failed");
+
+      const updated = await res.json();
       setModels((prev) =>
         prev.map((m) => (m._id === updated._id ? updated : m))
       );
       resetForm();
-    } else {
-      console.error("Update failed:", response.status, await response.text());
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Failed to update model");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,13 +175,17 @@ export default function Dashboard() {
           className="w-full p-3 border rounded"
           required
         />
-    
         <input
           type="file"
           accept="image/*"
           multiple
           onChange={handleUpload}
         />
+        <div className="flex gap-2 flex-wrap">
+          {form.images.map((url, i) => (
+            <img key={i} src={url} alt={`Uploaded ${i}`} className="w-20 h-20 object-cover rounded border" />
+          ))}
+        </div>
         <select
           name="pageantId"
           value={form.pageantId}
@@ -141,18 +195,28 @@ export default function Dashboard() {
         >
           <option value="">Select Pageant</option>
           {pageants.map((p) => (
-            <option key={p._id} value={p._id}>
-              {p.name}
-            </option>
+            <option key={p._id} value={p._id}>{p.name}</option>
           ))}
         </select>
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded shadow"
-        >
-          {editingModel ? "Update Model" : "Create Model"}
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded shadow"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Processing...' : editingModel ? "Update Model" : "Create Model"}
+          </button>
+          {editingModel && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="bg-gray-400 hover:bg-gray-500 text-white font-semibold px-6 py-3 rounded shadow"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
       </form>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -161,7 +225,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold mb-1">{model.name}</h2>
             <p className="text-sm mb-1">{model.bio}</p>
             <p className="text-xs text-gray-500 mb-3">
-              Pageant: {model.pageantId?.name}
+              Pageant: {getPageantName(model.pageantId)}
             </p>
             {model.images?.[0] && (
               <img
@@ -178,7 +242,7 @@ export default function Dashboard() {
                     name: model.name,
                     bio: model.bio,
                     images: model.images,
-                    pageantId: model.pageantId?._id || "",
+                    pageantId: model.pageantId?._id || model.pageantId || "",
                   });
                 }}
                 className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"

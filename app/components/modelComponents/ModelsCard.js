@@ -17,6 +17,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import VoteModal from "../Voting/VoteModal"; // Adjust path as needed
 import { Button } from "@mui/material";
 import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -42,7 +46,7 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-export default function ModelsCard({name, votes, pageantId, onVote, bio, images} ) {
+export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, images} ) {
   const [expanded, setExpanded] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -51,11 +55,48 @@ const handleFreeVote = () => {
   onVote(); // Call the free vote function
 };
 
-const handlePaidVote = () => {
-  setOpenModal(false);
-  // TODO: integrate with Stripe
-  console.log("Redirecting to Stripe...");
+
+
+
+const handlePaidVote = async () => {
+  console.log("Paid vote triggered");
+
+  try {
+    const stripe = await stripePromise;
+
+    const response = await fetch("http://localhost:5000/api/stripe/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        modelId: _id,
+        name,
+        votes: 10,
+        successUrl: "http://localhost:3000/ranking",
+        cancelUrl: "http://localhost:3000/vote-cancel",
+      }),
+    });
+
+    const result = await response.json();
+    console.log("Response from server:", result);
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to create session");
+    }
+
+    const stripeResult = await stripe.redirectToCheckout({ sessionId: result.id });
+
+    if (stripeResult.error) {
+      console.error("Stripe Redirect Error:", stripeResult.error.message);
+      alert("Payment failed: " + stripeResult.error.message);
+    }
+  } catch (err) {
+    console.error("Stripe Checkout error:", err);
+    alert("Something went wrong. Try again.");
+  }
 };
+
+
+  
 
   const handleExpandClick = () => {
     setExpanded(!expanded);

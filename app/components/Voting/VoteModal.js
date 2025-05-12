@@ -2,9 +2,12 @@
 // VoteModal.jsx
 
 import React from "react";
+import { loadStripe } from "@stripe/stripe-js";
 import { Modal, Box, Typography, Button, Divider } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+
+
 
 const modalStyle = {
   position: "absolute",
@@ -20,6 +23,14 @@ const modalStyle = {
 };
 
 export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote }) {
+
+
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  
+
+  
+
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={modalStyle}>
