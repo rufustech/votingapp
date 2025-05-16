@@ -35,7 +35,7 @@ export default function Home() {
   }, []);
 
   const handleBuyVotes = async (priceId) => {
-    const res = await fetch("/api/create-checkout-session", {
+    const res = await fetch("http://localhost:5000/api/stripe/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ priceId }),

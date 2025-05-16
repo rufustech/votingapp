@@ -1,19 +1,21 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import VoteModal from '../components/Voting/VoteModal';
+import { loadStripe } from "@stripe/stripe-js";
 import { urls } from '../constants';
 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 const MAX_VOTES_PER_DAY = 2;
 
 const getVotesData = () => {
   if (typeof window === "undefined") return { date: "", votes: 0 };
   const today = new Date().toISOString().split("T")[0];
   const storedData = JSON.parse(localStorage.getItem("voteData")) || { date: today, votes: 0 };
-
   if (storedData.date !== today) {
     localStorage.setItem("voteData", JSON.stringify({ date: today, votes: 0 }));
     return { date: today, votes: 0 };
   }
-
   return storedData;
 };
 
@@ -35,28 +37,50 @@ function Ranking() {
   const [votesLeft, setVotesLeft] = useState(MAX_VOTES_PER_DAY);
   const [paidVotes, setPaidVotesState] = useState(0);
 
+  // Stripe Success Callback Handler
   useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        const response = await fetch(`${urls.url}/api/models`);
-        if (!response.ok) throw new Error("Failed to fetch models");
-        const data = await response.json();
-        setModels(data);
-      } catch (error) {
-        console.error("Error fetching models:", error);
-      }
-    };
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentSuccess = urlParams.get('payment_success');
+    const modelId = urlParams.get('modelId');
+    const votes = urlParams.get('votes');
 
-    fetchModels();
+    if (paymentSuccess && modelId && votes) {
+      fetch(`${urls.url}/api/models/${modelId}/add-votes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ votes }),
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to update votes");
+          return res.json();
+        })
+        .then(data => {
+          console.log("✅ Votes updated via frontend", data);
+          setModels(prev =>
+            prev.map(m => m._id === modelId ? { ...m, votes: m.votes + parseInt(votes, 10) } : m)
+          );
+        })
+        .catch(err => {
+          console.error("❌ Error updating votes:", err.message);
+        });
+
+      // Clean up the URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const voteData = getVotesData();
-      const paid = getPaidVotes();
-      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
-      setPaidVotesState(paid);
-    }
+    fetch(`${urls.url}/api/models`)
+      .then(res => res.json())
+      .then(setModels)
+      .catch(err => console.error("Error fetching models:", err));
+  }, []);
+
+  useEffect(() => {
+    const voteData = getVotesData();
+    const paid = getPaidVotes();
+    setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
+    setPaidVotesState(paid);
   }, []);
 
   const sortedModels = [...models].sort((a, b) => b.votes - a.votes);
@@ -66,36 +90,69 @@ function Ranking() {
     setShowModal(true);
   };
 
-  const handleVote = async (modelId) => {
-    if (votesLeft <= 0) {
+  const handleFreeVote = async () => {
+    if (!selectedModel || votesLeft <= 0) {
       alert("You've reached your vote limit for today. Try again tomorrow.");
       return;
     }
 
     try {
-      const response = await fetch(`${urls.url}/api/models/${modelId}/vote`, {
+      const res = await fetch(`${urls.url}/api/models/${selectedModel._id}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!res.ok) {
+        const errorData = await res.json();
         alert(errorData.message || "Failed to vote.");
         return;
       }
 
-      const newVotesData = getVotesData();
-      newVotesData.votes += 1;
-      localStorage.setItem("voteData", JSON.stringify(newVotesData));
+      const voteData = getVotesData();
+      voteData.votes += 1;
+      localStorage.setItem("voteData", JSON.stringify(voteData));
 
-      setVotesLeft(MAX_VOTES_PER_DAY - newVotesData.votes);
-      setModels((prevModels) =>
-        prevModels.map((model) =>
-          model._id === modelId ? { ...model, votes: model.votes + 1 } : model
+      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
+      setModels(prev =>
+        prev.map(model =>
+          model._id === selectedModel._id ? { ...model, votes: model.votes + 1 } : model
         )
       );
-    } catch (error) {
-      console.error("Error voting:", error);
+    } catch (err) {
+      console.error("Error voting:", err);
+    } finally {
+      setShowModal(false);
+    }
+  };
+
+  const handlePaidVote = async (amount, votes) => {
+    if (!selectedModel) return;
+
+    try {
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error("Stripe failed to load");
+
+      const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modelId: selectedModel._id,
+          name: selectedModel.name,
+          votes,
+          amount,
+          cancelUrl: window.location.href
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to create session");
+
+      await stripe.redirectToCheckout({ sessionId: data.id });
+    } catch (err) {
+      console.error("❌ Stripe error:", err.message);
+      alert("Payment failed: " + err.message);
+    } finally {
+      setShowModal(false);
     }
   };
 
@@ -137,14 +194,8 @@ function Ranking() {
           <VoteModal
             open={showModal}
             handleClose={() => setShowModal(false)}
-            onFreeVote={() => {
-              alert(`You voted for ${selectedModel?.name} (free)!`);
-              setShowModal(false);
-            }}
-            onPaidVote={() => {
-              alert(`Redirecting to Stripe for ${selectedModel?.name}...`);
-              setShowModal(false);
-            }}
+            onFreeVote={handleFreeVote}
+            onPaidVote={handlePaidVote}
           />
         )}
       </div>

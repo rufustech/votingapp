@@ -88,6 +88,36 @@ function Models() {
         }
     };
 
+
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('payment_success')) {
+    console.log('Payment successful, refreshing models...');
+    
+    const fetchAndUpdateModels = async () => {
+      try {
+        const response = await fetch(`${urls.url}/api/models`);
+        if (response.ok) {
+          const data = await response.json();
+          setModels(data);
+          console.log('Models refreshed successfully');
+        } else {
+          console.error('Failed to refresh models');
+        }
+      } catch (error) {
+        console.error('Error refreshing models:', error);
+      }
+    };
+    
+    fetchAndUpdateModels();
+    
+    // Clean up URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+}, []);
+
+
+
     return (
         <div className="p-2">
             <h2 className="text-center text-lg font-semibold mb-4">Votes Left: {votesLeft}</h2>

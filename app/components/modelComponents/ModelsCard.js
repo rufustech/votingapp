@@ -14,13 +14,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import VoteModal from "../Voting/VoteModal"; // Adjust path as needed
-import { Button } from "@mui/material";
+import VoteModal from "../Voting/VoteModal";
+import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
+// Initialize Stripe outside the component
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -49,54 +49,76 @@ const ExpandMore = styled((props) => {
 export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, images} ) {
   const [expanded, setExpanded] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const handleFreeVote = () => {
-  setOpenModal(false);
-  onVote(); // Call the free vote function
-};
+  const handleFreeVote = () => {
+    setOpenModal(false);
+    onVote();
+  };
 
+  const handlePaidVote = async (amount, votes) => {
+    setError(null);
+    setIsLoading(true);
 
+    try {
+      // Validate inputs
+      if (isNaN(amount) || isNaN(votes)) {
+        throw new Error("Invalid amount or vote count");
+      }
 
-
-const handlePaidVote = async () => {
-  console.log("Paid vote triggered");
-
-  try {
-    const stripe = await stripePromise;
-
-    const response = await fetch("http://localhost:5000/api/stripe/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      console.log("💸 Creating checkout session:", {
         modelId: _id,
         name,
-        votes: 10,
-        successUrl: "http://localhost:3000/ranking",
-        cancelUrl: "http://localhost:3000/vote-cancel",
-      }),
-    });
+        votes,
+        amount,
+      });
 
-    const result = await response.json();
-    console.log("Response from server:", result);
+      // Get Stripe instance
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error("Failed to load Stripe");
+      }
 
-    if (!response.ok) {
-      throw new Error(result.error || "Failed to create session");
+      // Create checkout session
+      const response = await fetch('http://localhost:5000/api/stripe/create-checkout-session', {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          modelId: _id,
+          name,
+          votes,
+          amount,
+          cancelUrl: window.location.href // Add this
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to create checkout session");
+      }
+
+      const { id: sessionId } = await response.json();
+      console.log("Created session:", sessionId);
+
+      // Redirect to checkout
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) {
+        throw error;
+      }
+
+    } catch (error) {
+      console.error("Payment error:", error);
+      setError(error.message || "Payment failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-    const stripeResult = await stripe.redirectToCheckout({ sessionId: result.id });
-
-    if (stripeResult.error) {
-      console.error("Stripe Redirect Error:", stripeResult.error.message);
-      alert("Payment failed: " + stripeResult.error.message);
-    }
-  } catch (err) {
-    console.error("Stripe Checkout error:", err);
-    alert("Something went wrong. Try again.");
-  }
-};
+  };
 
 
-  
+
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -106,8 +128,8 @@ const handlePaidVote = async () => {
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: ["#9c27b0"], boxShadow: 3, }} aria-label="recipe">
-           {name[0]}
+          <Avatar sx={{ bgcolor: "#9c27b0", boxShadow: 3 }} aria-label="model">
+            {name[0]}
           </Avatar>
         }
         action={
@@ -115,10 +137,8 @@ const handlePaidVote = async () => {
             <MoreVertIcon />
           </IconButton>
         }
-     
         title={name}
         subheader={`Pageant: ${pageantId}`}
-        
         slotProps={{
           subheader: {
             sx: {
@@ -128,55 +148,83 @@ const handlePaidVote = async () => {
               fontSize: '0.8rem',
             },
           },
-          title:{
+          title: {
             sx: {
               textAlign: 'left',
               fontWeight: 'bold',
               color: 'slate.700',
               fontSize: '1.1rem',
             },
-
           }
         }}
-
       />
+
       <CardMedia
         component="img"
         height="194"
         image={images[0]}
         alt={name}
         sx={{
-            width: 200,
-            height: 240,
-            objectFit: 'cover',
-            borderRadius: 2,
-            mx: "auto" // center image horizontally
-          }}
+          width: 200,
+          height: 240,
+          objectFit: 'cover',
+          borderRadius: 2,
+          mx: "auto"
+        }}
       />
-     <CardContent>
-     <Typography
-    variant="body2"
-    sx={{ color: 'text.secondary', textAlign: 'center', fontWeight: 'medium', mb: 1 }}
-  >
-    Votes: {votes}
-  </Typography>
-  <Button
-    variant="contained"
-    color="secondary"
-    fullWidth
-    sx={{ fontWeight: "bold", mt: 1 }}
-    onClick={() => setOpenModal(true)}
-  >
-    VOTE NOW
-  </Button>
-  <VoteModal
-  open={openModal}
-  handleClose={() => setOpenModal(false)}
-  onFreeVote={handleFreeVote}
-  onPaidVote={handlePaidVote}
-/>
 
-</CardContent>
+      <CardContent>
+        <Typography
+          variant="body2"
+          sx={{ 
+            color: 'text.secondary', 
+            textAlign: 'center', 
+            fontWeight: 'medium', 
+            mb: 1 
+          }}
+        >
+          Votes: {votes}
+        </Typography>
+
+        {error && (
+          <Typography 
+            color="error" 
+            sx={{ 
+              textAlign: 'center', 
+              mb: 2,
+              fontSize: '0.875rem' 
+            }}
+          >
+            {error}
+          </Typography>
+        )}
+
+        <Button
+          variant="contained"
+          color="secondary"
+          fullWidth
+          sx={{ fontWeight: "bold", mt: 1 }}
+          onClick={() => setOpenModal(true)}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'VOTE NOW'
+          )}
+        </Button>
+
+        <VoteModal
+          open={openModal}
+          handleClose={() => {
+            setOpenModal(false);
+            setError(null);
+          }}
+          onFreeVote={handleFreeVote}
+          onPaidVote={handlePaidVote}
+          isLoading={isLoading}
+        />
+      </CardContent>
 
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
@@ -195,31 +243,29 @@ const handlePaidVote = async () => {
         </ExpandMore>
       </CardActions>
 
-
-
-<Collapse in={expanded} timeout="auto" unmountOnExit>
-    <CardContent>
-        <Typography 
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography 
             variant="h6" 
             sx={{ 
-                marginBottom: 2,
-                fontWeight: 'bold'
+              marginBottom: 2,
+              fontWeight: 'bold'
             }}
-        >
+          >
             Biography
-        </Typography>
-        <Typography 
+          </Typography>
+          <Typography 
             variant="body1" 
             sx={{ 
-                padding: '0.5rem',
-                color: 'text.primary',
-                lineHeight: 1.6
+              padding: '0.5rem',
+              color: 'text.primary',
+              lineHeight: 1.6
             }}
-        >
+          >
             {bio}
-        </Typography>
-    </CardContent>
-</Collapse>
+          </Typography>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }

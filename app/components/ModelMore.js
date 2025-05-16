@@ -60,6 +60,28 @@ function ModelMore() {
     }
   }, []);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment_success')) {
+      // Refresh models data after successful payment
+      fetchModels();
+      
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  const fetchModels = async () => {
+    try {
+      const response = await fetch(`${urls.url}/api/models`);
+      if (!response.ok) throw new Error("Failed to fetch models");
+      const data = await response.json();
+      setModels(data);
+    } catch (error) {
+      console.error("Error fetching models:", error);
+    }
+  };
+
   // Function to handle vote
   const handleVote = async (modelId) => {
     if (votesLeft <= 0) {
@@ -102,15 +124,17 @@ function ModelMore() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {models.length > 0 ? (
           models.map((model) => (
-            <ModelsCard
-              key={model._id}
-              name={model.name}
-              votes={model.votes}
-              images={model.images}
-              bio={model.bio}
-              pageantId={model.pageantId?.name}
-              onVote={() => handleVote(model._id)}
-            />
+          <ModelsCard
+  key={model._id}
+  _id={model._id}  // ✅ Add this
+  name={model.name}
+  votes={model.votes}
+  images={model.images}
+  bio={model.bio}
+  pageantId={model.pageantId?.name}
+  onVote={() => handleVote(model._id)}
+/>
+
           ))
         ) : (
           <p className="text-center col-span-full">No models found.</p>
