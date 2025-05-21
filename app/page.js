@@ -41,6 +41,12 @@ export default function Home() {
       body: JSON.stringify({ priceId }),
     });
     const data = await res.json();
+
+     if (!data?.url) {
+    console.error("Stripe checkout session creation failed:", data);
+    return;
+  }
+  
     window.location.href = data.url;
   };
 

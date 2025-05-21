@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import ModelCard from "./modelComponents/ModelCard";
+import { urls } from "../constants";
 
 const MAX_VOTES_PER_DAY = 1;
 

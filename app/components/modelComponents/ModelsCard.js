@@ -18,6 +18,7 @@ import VoteModal from "../Voting/VoteModal";
 import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import { urls } from '../../constants';
 
 // Initialize Stripe outside the component
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
