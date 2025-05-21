@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const API_URL = "http://localhost:5000/models"; // Adjust for your backend
+    const API_URL = `${urls.url}/models`; // Adjust for your backend
     const { method, body, query } = req;
   
     const options = method !== "GET" ? { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {};

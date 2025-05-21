@@ -156,6 +156,7 @@ function Ranking() {
     }
   };
 
+  
   return (
     <div className="container mx-auto mt-20 max-w-6xl px-4 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Rankings List */}
