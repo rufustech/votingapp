@@ -81,7 +81,7 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
       }
 
       // Create checkout session
-      const response = await fetch('http://localhost:5000/api/stripe/create-checkout-session', {
+      const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"
