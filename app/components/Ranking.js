@@ -145,6 +145,7 @@ function Ranking() {
       });
 
       const data = await response.json();
+      console.log("Checkout session:", data);
       if (!response.ok) throw new Error(data.error || "Failed to create session");
 
       await stripe.redirectToCheckout({ sessionId: data.id });

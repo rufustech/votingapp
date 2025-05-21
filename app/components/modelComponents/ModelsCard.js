@@ -77,9 +77,11 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
 
       // Get Stripe instance
       const stripe = await stripePromise;
-      if (!stripe) {
-        throw new Error("Failed to load Stripe");
-      }
+    if (!stripe) {
+  console.error("Stripe failed to initialize");
+  alert("Stripe not configured. Contact support.");
+  return;
+}
 
       // Create checkout session
       const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
@@ -105,7 +107,8 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
       console.log("Created session:", sessionId);
 
       // Redirect to checkout
-      const { error } = await stripe.redirectToCheckout({ sessionId });
+      const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+      
       if (error) {
         throw error;
       }
