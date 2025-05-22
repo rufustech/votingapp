@@ -9,7 +9,6 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { yellow } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -61,20 +60,17 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
 const handlePaidVote = async (amount, votes) => {
     setError(null);
     setIsLoading(true);
-
     try {
       // Validate inputs
       if (isNaN(amount) || isNaN(votes)) {
         throw new Error("Invalid amount or vote count");
       }
-
       console.log("💸 Creating checkout session:", {
         modelId: _id,
         name,
         votes,
         amount,
       });
-
       // Get Stripe instance
       const stripe = await stripePromise;
       if (!stripe) {

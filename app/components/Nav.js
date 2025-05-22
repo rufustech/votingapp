@@ -1,19 +1,12 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import {  useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  Popover,
-  PopoverButton,
   PopoverGroup,
-  PopoverPanel,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
+
 } from "@headlessui/react";
 import {
   Bars3Icon,

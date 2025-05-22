@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Poppins } from "next/font/google";
 import ModelMore from "./components/ModelMore";
 import { urls } from "./constants";
-import Hero from "./components/Hero";
+
 
 const poppins = Poppins({
   weight: ["700"],
@@ -15,9 +15,9 @@ const poppins = Poppins({
 export default function Home() {
   const [models, setModels] = useState([]);
   const [votePackages, setVotePackages] = useState([
-    { label: "$5 = 10 Votes", priceId: "price_5", votes: 10 },
-    { label: "$10 = 25 Votes", priceId: "price_10", votes: 25 },
-    { label: "$20 = 60 Votes", priceId: "price_20", votes: 60 },
+    { label: "$0.50 = 1 Vote", priceId: "price_5", votes: 10 },
+    { label: "$5 = 10 Votes", priceId: "price_10", votes: 25 },
+    { label: "See Pageants", priceId: "price_20", votes: 60 },
   ]);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Home() {
 <div className="absolute inset-0  bg-opacity-100" />
 
 <div className="relative z-10 flex flex-col justify-center h-full px-4 sm:px-6 md:px-12 max-w-2xl">
-  <h1 className={`${poppins.className} text-gray-800 text-3xl sm:text-5xl md:text-5xl dark:text-white  uppercase `}>
+  <h1 className={`${poppins.className} text-[#9c27b0] text-3xl sm:text-5xl md:text-5xl dark:text-white  uppercase `}>
     Miss Zimbabwe 2025!
   </h1>
 

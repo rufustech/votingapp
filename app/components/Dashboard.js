@@ -169,7 +169,7 @@ const handleDelete = async (id) => {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8 mt-24">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6 text-center">Model Dashboard</h1>
+      <h1 className="text-3xl font-bold text-[#9c27b0] mb-6 text-center">Model Dashboard</h1>
 
       <form onSubmit={handleSubmit} className="mb-10 bg-white p-6 rounded-lg shadow-md space-y-4">
         <input

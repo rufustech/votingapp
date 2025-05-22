@@ -6,7 +6,7 @@ export default function About() {
   return (
     <div className="container mx-auto max-w-5xl mt-16 px-6 py-20">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold dark:text-gray-200 text-blue-700 mb-4">About Us</h1>
+        <h1 className="text-4xl font-bold dark:text-gray-200 text-[#9c27b0] mb-4">About Us</h1>
         <p className="text-gray-600 dark:text-white text-lg max-w-3xl mx-auto">
           We make voting easy, fun, and impactful &ndash; from crowning beauty queens to recognizing corporate excellence.
         </p>
@@ -15,7 +15,7 @@ export default function About() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="relative w-full h-[400px]"> {/* Add container with fixed dimensions */}
           <Image
-            src="/voting-app-showcase.jpg"
+            src="/bkgrnd.jpg"
             alt="Voting Showcase"
             fill
             priority
@@ -24,7 +24,7 @@ export default function About() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Why We Exist</h2>
+          <h2 className="text-2xl font-semibold text-[#9c27b0] mb-4">Why We Exist</h2>
           <p className="text-gray-600 dark:text-gray-200 mb-4">
             We built this platform to empower organizations and event organizers with a seamless, secure, and engaging voting experience. Whether it&apos;s a Year-End Awards ceremony at a corporate firm, a glamorous beauty pageant, or a fan-voted music contest &mdash; we&apos;ve got you covered.
           </p>
@@ -35,42 +35,42 @@ export default function About() {
       </div>
 
       <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <div className="bg-white shadow-md p-6 rounded-lg">
-          <div className="relative w-20 h-20 mx-auto mb-4"> {/* Add container with fixed dimensions */}
+        <div className="bg-white shadow-[#9c27b0] shadow-xs p-3 rounded-lg">
+          <div className="relative w-full h-52 mx-auto mb-4"> {/* Add container with fixed dimensions */}
             <Image
-              src="/beauty.png"
+              src="/crown.jpg"
               alt="Pageants"
               fill
-              className="object-contain"
+              className="object-cover"
             />
           </div>
-          <h3 className="text-lg font-semibold text-blue-600  mb-2">Beauty Pageants</h3>
+          <h3 className="text-lg font-semibold text-[#9c27b0]  mb-2">Beauty Pageants</h3>
           <p className="text-gray-500 text-sm">Empowering the audience to crown their queen with live digital voting.</p>
         </div>
 
-        <div className="bg-white shadow-md p-6 rounded-lg">
-          <div className="relative w-20 h-20 mx-auto mb-4">
+        <div className="bg-white shadow-[#9c27b0] shadow-xs p-3 rounded-lg">
+          <div className="relative w-full h-52 mx-auto mb-4"> {/* Add container with fixed dimensions */}
             <Image
-              src="/corporate.png"
+              src="/crown.jpg"
               alt="Corporate"
               fill
-              className="object-contain"
+              className="object-cover"
             />
           </div>
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Corporate Awards</h3>
+          <h3 className="text-lg font-semibold text-[#9c27b0] mb-2">Corporate Awards</h3>
           <p className="text-gray-500 text-sm">Streamline employee voting for annual awards, recognitions, and leadership polls.</p>
         </div>
 
-        <div className="bg-white shadow-md p-6 rounded-lg">
-          <div className="relative w-20 h-20 mx-auto mb-4">
+        <div className="bg-white shadow-[#9c27b0] shadow-xs p-3 rounded-lg">
+          <div className="relative w-full h-52 mx-auto mb-4">
             <Image
-              src="/music.png"
+              src="/crown.jpg"
               alt="Music Awards"
               fill
-              className="object-contain"
+              className="object-cover"
             />
           </div>
-          <h3 className="text-lg font-semibold text-blue-600 mb-2">Entertainment</h3>
+          <h3 className="text-lg font-semibold text-[#9c27b0] mb-2">Entertainment</h3>
           <p className="text-gray-500 text-sm">Let fans decide their favorites in music, film, and digital arts competitions.</p>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { urls } from '../constants';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-const MAX_VOTES_PER_DAY = 2;
+const MAX_VOTES_PER_DAY = 1;
 
 const getVotesData = () => {
   if (typeof window === "undefined") return { date: "", votes: 0 };
@@ -162,7 +162,7 @@ function Ranking() {
     <div className="container mx-auto mt-20 max-w-6xl px-4 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Rankings List */}
       <div>
-        <h2 className="text-2xl font-bold dark:text-blue-500 text-blue-600 mb-2">🏆 Leaderboard</h2>
+        <h2 className="text-2xl font-bold dark:text-blue-500 text-[#9c27b0] mb-2">🏆 Leaderboard</h2>
         <h3 className="mb-4 text-gray-600 dark:text-white text-lg">Free Votes Remaining: {votesLeft}</h3>
         <ul className="space-y-4">
           {sortedModels.map((model, index) => (

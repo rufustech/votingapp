@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ModelsCard from "./modelComponents/ModelsCard";
 import { urls } from "../constants";
 
-const MAX_VOTES_PER_DAY = 2;
+const MAX_VOTES_PER_DAY = 1;
 
 // Safe localStorage functions
 const getVotesData = () => {
@@ -118,7 +118,7 @@ function ModelMore() {
 
   return (
     <div className="p-2">
-      <h2 className="text-center text-lg font-semibold mb-4">
+      <h2 className="text-center text-[#9c27b0] text-lg font-semibold mb-4">
         Free Votes Left: {votesLeft}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
