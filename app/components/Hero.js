@@ -9,7 +9,7 @@ export default function Hero() {
         className="h-[600px] bg-cover bg-center bg-black/60 bg-blend-overlay"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1950&q=80')",
+            "url('/pagentCrown.jpg')",
         }}
       >
         <div className="h-full w-full flex items-center justify-center">

@@ -108,7 +108,7 @@ export default function Home() {
         <ul className="divide-y divide-gray-200 dark:divide-gray-600">
           {[...models]
             .sort((a, b) => b.votes - a.votes)
-            .slice(0, 6)
+            .slice(0, 5)
             .map((model) => (
               <li
                 key={model._id}
