@@ -58,7 +58,7 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
     onVote();
   };
 
-  const handlePaidVote = async (amount, votes) => {
+const handlePaidVote = async (amount, votes) => {
     setError(null);
     setIsLoading(true);
 
@@ -77,11 +77,11 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
 
       // Get Stripe instance
       const stripe = await stripePromise;
-    if (!stripe) {
-  console.error("Stripe failed to initialize");
-  alert("Stripe not configured. Contact support.");
-  return;
-}
+      if (!stripe) {
+        console.error("Stripe failed to initialize");
+        alert("Stripe not configured. Contact support.");
+        return;
+      }
 
       // Create checkout session
       const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
@@ -94,7 +94,7 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
           name,
           votes,
           amount,
-          cancelUrl: window.location.href // Add this
+          cancelUrl: window.location.href
         }),
       });
 
@@ -103,11 +103,17 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
         throw new Error(errorText || "Failed to create checkout session");
       }
 
-      const { id: sessionId } = await response.json();
-      console.log("Created session:", sessionId);
+      const sessionData = await response.json();
+      console.log("Created session:", sessionData);
+
+      if (!sessionData || !sessionData.id) {
+        throw new Error("Invalid session data received");
+      }
 
       // Redirect to checkout
-      const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+      const { error } = await stripe.redirectToCheckout({ 
+        sessionId: sessionData.id  // Changed from data.id to sessionData.id
+      });
       
       if (error) {
         throw error;
@@ -120,6 +126,7 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
       setIsLoading(false);
     }
   };
+
 
 
 

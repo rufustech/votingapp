@@ -132,7 +132,7 @@ function Ranking() {
       const stripe = await stripePromise;
       if (!stripe) throw new Error("Stripe failed to load");
 
-      const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
+       const response = await fetch(`https://votingapp-backend-mohg.onrender.com/api/stripe/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -140,7 +140,7 @@ function Ranking() {
           name: selectedModel.name,
           votes,
           amount,
-          cancelUrl: window.location.href
+          cancelUrl: 'https://votes.co.zw/cancel'
         }),
       });
 
