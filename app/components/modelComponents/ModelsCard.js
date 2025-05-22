@@ -128,9 +128,6 @@ const handlePaidVote = async (amount, votes) => {
   };
 
 
-
-
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

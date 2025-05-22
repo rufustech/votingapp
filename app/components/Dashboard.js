@@ -142,16 +142,30 @@ export default function Dashboard() {
     editingModel ? await handleUpdate() : await handleCreate();
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this model?")) return;
+const handleDelete = async (id) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this model?");
+  if (!confirmDelete) return;
 
-    const res = await fetch(`${urls.url}/api/models/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      setModels((prev) => prev.filter((m) => m._id !== id));
-    } else {
-      console.error("Delete failed:", res.status, await res.text());
+  try {
+    const res = await fetch(`${urls.url}/api/models/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Delete failed:", res.status, errorText);
+      alert("Failed to delete model. Server responded with: " + errorText);
+      return;
     }
-  };
+
+    setModels((prev) => prev.filter((m) => m._id !== id));
+    alert("Model deleted successfully.");
+  } catch (err) {
+    console.error("Delete request error:", err);
+    alert("An error occurred while deleting the model.");
+  }
+};
+
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8 mt-24">
