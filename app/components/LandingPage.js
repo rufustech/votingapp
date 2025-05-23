@@ -24,13 +24,13 @@ export default function LandingPage() {
   return (
     <div className=" bg-gray-50 py-6 px-2">
       <h1 className="text-3xl font-bold text-center text-gray-600 mb-8">
-        Select Event to Vote:
+        Events to Vote:
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center max-w-7xl mx-auto ">
 {pageants.slice(0, 8).map((pageant) => (
   <Link href={`/pageants/${pageant.pageantSlug}`} key={pageant._id}>
-    <div className="bg-white shadow rounded-lg p-2 border-l-3 border-yellow-400 h-20  hover:shadow-xl transition duration-300 cursor-pointer max-w-xs mx-auto">
+    <div className="bg-white shadow rounded-lg p-2 border-l-3 border-purple-500 h-20  hover:shadow-xl transition duration-300 cursor-pointer max-w-xs mx-auto">
       <div className="p-4 text-center">
         <h2 className="text-lg font-semibold text-gray-600  truncate">{pageant.name}</h2>
         <p

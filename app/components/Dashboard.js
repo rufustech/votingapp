@@ -10,6 +10,15 @@ export default function Dashboard() {
   const [pageants, setPageants] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
+  const [pageantForm, setPageantForm] = useState({
+  name: "",
+  pageantId: "",
+  startDate: "",
+  endDate: "",
+  status: "Upcoming"
+});
+const [editingPageant, setEditingPageant] = useState(null);
+
 
 
   const resetForm = () => {
@@ -197,6 +206,171 @@ const handleDelete = async (id) => {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8 mt-24">
+      {/* PAGEANT MANAGEMENT SECTION */}
+<div className="mb-12 bg-white p-6 rounded-lg shadow-md space-y-4">
+  <h2 className="text-2xl font-bold text-[#4caf50]">Manage Pageants</h2>
+  
+  <div className="grid md:grid-cols-2 gap-4">
+    <input
+      type="text"
+      name="name"
+      placeholder="Pageant Name"
+      value={pageantForm.name}
+      onChange={(e) => setPageantForm({ ...pageantForm, name: e.target.value })}
+      className="w-full p-3 border rounded"
+      required
+    />
+    <input
+      type="number"
+      name="pageantId"
+      placeholder="Pageant ID"
+      value={pageantForm.pageantId}
+      onChange={(e) => setPageantForm({ ...pageantForm, pageantId: e.target.value })}
+      className="w-full p-3 border rounded"
+      required
+    />
+    <input
+      type="date"
+      name="startDate"
+      value={pageantForm.startDate}
+      onChange={(e) => setPageantForm({ ...pageantForm, startDate: e.target.value })}
+      className="w-full p-3 border rounded"
+    />
+    <input
+      type="date"
+      name="endDate"
+      value={pageantForm.endDate}
+      onChange={(e) => setPageantForm({ ...pageantForm, endDate: e.target.value })}
+      className="w-full p-3 border rounded"
+    />
+    <select
+      name="status"
+      value={pageantForm.status}
+      onChange={(e) => setPageantForm({ ...pageantForm, status: e.target.value })}
+      className="w-full p-3 border rounded"
+    >
+      <option value="Upcoming">Upcoming</option>
+      <option value="ongoing">Ongoing</option>
+      <option value="past">Past</option>
+    </select>
+  </div>
+
+  <div className="flex gap-4">
+    <button
+      className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded shadow"
+      onClick={async () => {
+        const method = editingPageant ? "PUT" : "POST";
+        const url = editingPageant
+          ? `${urls.url}/api/pageants/${editingPageant._id}`
+          : `${urls.url}/api/pageants`;
+
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pageantForm),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          if (editingPageant) {
+            setPageants((prev) =>
+              prev.map((p) => (p._id === data._id ? data : p))
+            );
+          } else {
+            setPageants((prev) => [...prev, data]);
+          }
+          setPageantForm({
+            name: "",
+            pageantId: "",
+            startDate: "",
+            endDate: "",
+            status: "Upcoming"
+          });
+          setEditingPageant(null);
+          alert("Pageant saved!");
+        } else {
+          alert(data.message || "Failed to save pageant.");
+        }
+      }}
+    >
+      {editingPageant ? "Update Pageant" : "Create Pageant"}
+    </button>
+
+    {editingPageant && (
+      <button
+        className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-3 rounded shadow"
+        onClick={() => {
+          setPageantForm({
+            name: "",
+            pageantId: "",
+            startDate: "",
+            endDate: "",
+            status: "Upcoming"
+          });
+          setEditingPageant(null);
+        }}
+      >
+        Cancel Edit
+      </button>
+    )}
+  </div>
+</div>
+
+{/* PAGEANT LIST SECTION */}
+<div className="bg-white p-6 rounded-lg shadow-md">
+  <h2 className="text-xl font-semibold text-gray-800 mb-4">Existing Pageants</h2>
+  <ul className="space-y-3">
+    {pageants.map((p) => (
+      <li key={p._id} className="flex justify-between items-center border-b pb-2">
+        <div>
+          <p className="font-semibold">{p.name}</p>
+          <p className="text-sm text-gray-500">
+            ID: {p.pageantId} | Status: {p.status} | Start: {p.startDate?.slice(0, 10)} | End: {p.endDate?.slice(0, 10)}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            className="text-yellow-600 hover:underline"
+            onClick={() => {
+              setEditingPageant(p);
+              setPageantForm({
+                name: p.name,
+                pageantId: p.pageantId,
+                startDate: p.startDate?.slice(0, 10),
+                endDate: p.endDate?.slice(0, 10),
+                status: p.status
+              });
+            }}
+          >
+            Edit
+          </button>
+          <button
+            className="text-red-600 hover:underline"
+            onClick={async () => {
+              const confirmDelete = window.confirm("Delete this pageant?");
+              if (!confirmDelete) return;
+
+              const res = await fetch(`${urls.url}/api/pageants/${p._id}`, {
+                method: "DELETE"
+              });
+
+              if (res.ok) {
+                setPageants((prev) => prev.filter((pg) => pg._id !== p._id));
+                alert("Deleted!");
+              } else {
+                alert("Failed to delete pageant.");
+              }
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>
+
       <h1 className="text-3xl font-bold text-[#9c27b0] mb-6 text-center">Model Dashboard</h1>
 
       <form onSubmit={handleSubmit} className="mb-10 bg-white p-6 rounded-lg shadow-md space-y-4">
