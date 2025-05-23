@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ModelCard from "./modelComponents/ModelCard";
 import { urls } from "../constants";
+import ModelsCard from "./modelComponents/ModelsCard";
 
 const MAX_VOTES_PER_DAY = 1;
 
@@ -125,7 +126,7 @@ useEffect(() => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4  gap-4">
                 {models.length > 0 ? (
                     models.map((model) => (
-                        <ModelCard
+                        <ModelsCard
                             key={model._id}
                             name={model.name}
                             bio={model.bio}

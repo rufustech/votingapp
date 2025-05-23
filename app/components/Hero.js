@@ -6,13 +6,13 @@ export default function Hero() {
     <div className="w-full">
       {/* Hero Section 1 */}
       <section
-        className="h-[600px] bg-cover bg-center bg-black/60 bg-blend-overlay"
+        className="h-[400px] bg-cover bg-center bg-black/60 bg-blend-overlay"
         style={{
           backgroundImage:
             "url('/pagentCrown.jpg')",
         }}
       >
-        <div className="h-full w-full flex items-center justify-center">
+        <div  className="h-full w-full flex items-center justify-center">
           <div className="container mx-auto px-4">
             <fieldset className="w-full max-w-xl border-2 border-yellow-400 bg-black/80 px-10 py-6 text-white font-serif">
               <legend className="text-yellow-400 uppercase text-sm tracking-widest">

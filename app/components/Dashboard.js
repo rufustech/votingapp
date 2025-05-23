@@ -9,25 +9,51 @@ export default function Dashboard() {
   const [editingModel, setEditingModel] = useState(null);
   const [pageants, setPageants] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [mainImageIndex, setMainImageIndex] = useState(0);
+
 
   const resetForm = () => {
     setForm({ name: "", bio: "", images: [], pageantId: "" });
     setEditingModel(null);
   };
 
-  const getPageantName = (id) => pageants.find(p => p._id === id)?.name || "Unknown";
+const getPageantName = (id) => {
+  if (!id) {
+    console.log("Pageant ID is null or undefined:", id);
+    return "No Pageant"; // Handle case where pageantId is missing
+  }
 
-  useEffect(() => {
-    fetch(`${urls.url}/api/models`)
-      .then((res) => res.json())
-      .then(setModels)
-      .catch((error) => console.error("Error fetching models:", error));
+  // Log the pageantId and the pageants array to see what's being passed
+  console.log("Looking for pageant with ID:", id);
 
-    fetch(`${urls.url}/api/pageants`)
-      .then((res) => res.json())
-      .then(setPageants)
-      .catch((error) => console.error("Error fetching pageants:", error));
-  }, []);
+  // Find the pageant by matching _id with the pageantId from the model
+  const pageant = pageants.find((p) => p._id === String(id)); // Ensure the id is a string
+
+  console.log("Found pageant:", pageant); // Log to verify the pageant is found
+  return pageant ? pageant.name : "Unknown"; // Return the name if found, else "Unknown"
+};
+
+
+
+
+
+
+
+useEffect(() => {
+  fetch(`${urls.url}/api/models`)
+    .then((res) => res.json())
+    .then(setModels)
+    .catch((error) => console.error("Error fetching models:", error));
+
+  fetch(`${urls.url}/api/pageants`)
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Fetched pageants:", data); // Debugging line
+      setPageants(data);
+    })
+    .catch((error) => console.error("Error fetching pageants:", error));
+}, []);
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -67,10 +93,12 @@ export default function Dashboard() {
         throw new Error("Upload response missing images.");
       }
   
-      setForm((prev) => ({
-        ...prev,
-        images: [...prev.images, ...data.images],
-      }));
+setForm((prev) => ({
+  ...prev,
+  images: [...prev.images, ...data.images],
+}));
+setMainImageIndex(0); // first image becomes main
+
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload images. Please try again.\n" + error.message);
@@ -195,11 +223,39 @@ const handleDelete = async (id) => {
           multiple
           onChange={handleUpload}
         />
-        <div className="flex gap-2 flex-wrap">
-          {form.images.map((url, i) => (
-            <img key={i} src={url} alt={`Uploaded ${i}`} className="w-20 h-20 object-cover rounded border" />
-          ))}
-        </div>
+<div className="flex gap-2 flex-wrap">
+  {form.images.map((url, i) => (
+    <div key={i} className="relative">
+      <img
+        src={url}
+        alt={`Uploaded ${i}`}
+        className={`w-20 h-20 object-cover rounded border-2 ${
+          i === mainImageIndex ? "border-blue-600" : "border-gray-300"
+        } cursor-pointer`}
+        onClick={() => setMainImageIndex(i)}
+        title="Click to set as main image"
+      />
+      <button
+        type="button"
+        className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+        onClick={() => {
+          const updatedImages = [...form.images];
+          updatedImages.splice(i, 1);
+          setForm((prev) => ({
+            ...prev,
+            images: updatedImages,
+          }));
+          if (mainImageIndex === i) setMainImageIndex(0);
+          else if (i < mainImageIndex) setMainImageIndex((prev) => prev - 1);
+        }}
+        title="Remove image"
+      >
+        ×
+      </button>
+    </div>
+  ))}
+</div>
+
         <select
           name="pageantId"
           value={form.pageantId}
@@ -233,46 +289,48 @@ const handleDelete = async (id) => {
         </div>
       </form>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {models.map((model) => (
-          <div key={model._id} className="bg-white rounded-lg shadow-md p-5">
-            <h2 className="text-xl font-bold mb-1">{model.name}</h2>
-            <p className="text-sm mb-1">{model.bio}</p>
-            <p className="text-xs text-gray-500 mb-3">
-              Pageant: {getPageantName(model.pageantId)}
-            </p>
-            {model.images?.[0] && (
-              <img
-                src={model.images[0]}
-                alt={model.name}
-                className="w-full h-40 object-cover rounded mb-4"
-              />
-            )}
-            <div className="flex justify-between">
-              <button
-                onClick={() => {
-                  setEditingModel(model);
-                  setForm({
-                    name: model.name,
-                    bio: model.bio,
-                    images: model.images,
-                    pageantId: model.pageantId?._id || model.pageantId || "",
-                  });
-                }}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(model._id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {models.map((model) => (
+    <div key={model._id} className="bg-white rounded-lg shadow-md p-5">
+      <h2 className="text-xl font-bold mb-1">{model.name}</h2>
+      <p className="text-sm mb-1">{model.bio}</p>
+      <p className="text-xs text-gray-500 mb-3">
+        Pageant: {getPageantName(model.pageantId) || "No Pageant"}
+      </p>
+      {model.images?.[0] && (
+        <img
+          src={model.images[0]}
+          alt={model.name}
+          className="w-full h-40 object-cover rounded mb-4"
+        />
+      )}
+      <div className="flex justify-between">
+        <button
+          onClick={() => {
+            setEditingModel(model);
+            setForm({
+              name: model.name,
+              bio: model.bio,
+              images: model.images,
+              pageantId: model.pageantId?._id || model.pageantId || "",
+            });
+          }}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => handleDelete(model._id)}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Delete
+        </button>
       </div>
+    </div>
+  ))}
+</div>
+
+
     </div>
   );
 }
