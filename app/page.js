@@ -115,7 +115,7 @@ export default function Home() {
           </section>
 
           {/* MODELS SECTION */}
-          <section className="my-16">
+          <section className="">
             <LandingPage />
           </section>
         </div>
