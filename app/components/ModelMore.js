@@ -132,7 +132,7 @@ function ModelMore() {
   images={model.images}
   bio={model.bio}
   pageantId={model.pageantId?.name}
-  onVote={() => handleVote(model._id)}
+  // onVote={() => handleVote(model._id)}
 />
 
           ))

@@ -58,29 +58,35 @@ export default function RankingByPageant() {
     setShowModal(true);
   };
 
-  const handleFreeVote = async () => {
-    if (!selectedModel || votesLeft <= 0) {
+const handleFreeVote = async () => {
+  try {
+    const voteData = getVotesData();
+    if (voteData.votes >= MAX_VOTES_PER_DAY) {
       alert("You've reached your vote limit for today.");
       return;
     }
 
-    const res = await fetch(`${urls.url}/api/models/${selectedModel._id}/vote`, {
+    const res = await fetch(`${urls.url}/api/models/${_id}/vote`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
 
-    if (res.ok) {
-      const voteData = getVotesData();
-      voteData.votes += 1;
-      localStorage.setItem("voteData", JSON.stringify(voteData));
-      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
-      setModels(prev =>
-        prev.map(m => m._id === selectedModel._id ? { ...m, votes: m.votes + 1 } : m)
-      );
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.message || "Vote failed");
     }
 
-    setShowModal(false);
-  };
+    voteData.votes += 1;
+    localStorage.setItem("voteData", JSON.stringify(voteData));
+
+    alert("Thanks for voting!");
+    setOpenModal(false);
+  } catch (err) {
+    console.error("Vote error:", err.message);
+    alert("Voting failed: " + err.message);
+  }
+};
+
 
   const handlePaidVote = async (amount, votes) => {
     try {

@@ -52,10 +52,42 @@ export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, im
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleFreeVote = () => {
+ const handleFreeVote = async () => {
+  try {
+    const voteData = JSON.parse(localStorage.getItem("voteData")) || { date: "", votes: 0 };
+    const today = new Date().toISOString().split("T")[0];
+
+    if (voteData.date !== today) {
+      voteData.date = today;
+      voteData.votes = 0;
+    }
+
+    if (voteData.votes >= 1) {
+      alert("You've reached your free vote limit today.");
+      return;
+    }
+
+    const res = await fetch(`${urls.url}/api/models/${_id}/vote`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.message || "Vote failed");
+    }
+
+    voteData.votes += 1;
+    localStorage.setItem("voteData", JSON.stringify(voteData));
+
+    alert("✅ Vote successful!");
     setOpenModal(false);
-    onVote();
-  };
+  } catch (err) {
+    console.error("Free vote error:", err.message);
+    alert("❌ Vote failed: " + err.message);
+  }
+};
+
 
 const handlePaidVote = async (amount, votes) => {
     setError(null);
