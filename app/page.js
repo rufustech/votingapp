@@ -47,41 +47,50 @@ export default function Home() {
         <div className="container mt-6 mx-auto max-w-7xl">
           <section className="grid lg:grid-cols-4 gap-6 mb-12">
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-8">
-              {/* Welcome Section */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm">
-                <h1 className={`${poppins.className} text-3xl text-gray-800 dark:text-white mb-6`}>
-                  Best Voting Platform in Zimbabwe
-                </h1>
+         <div 
+  className="lg:col-span-3 space-y-8"
+  style={{
+    backgroundImage: 'url("/pagentCrown.jpg")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  }}
+>
+  {/* Welcome Section */}
+  <div className="bg-white/10 dark:bg-gray-500 rounded-xl p-8 shadow-sm">
+    <h1 className={`${poppins.className} text-3xl  text-gray-200 mb-6`}>
+      Best Voting Platform
+    </h1>
 
-                <div className="space-y-6">
-                  {/* Free Vote Info */}
-                  <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-100 dark:border-purple-800">
-                    <p className="text-purple-700 dark:text-purple-300 font-medium">
-                      🎖️ Vote for your favorite contestant (1 free vote daily)
-                    </p>
-                  </div>
+    <div className="space-y-6">
+      {/* Free Vote Info */}
+      <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-100 dark:border-purple-800">
+        <p className="text-purple-700 dark:text-purple-300 font-medium">
+          🎖️ Vote for your favorite contestant (1 free vote daily)
+        </p>
+      </div>
 
-                  {/* Vote Packages */}
-                  <div>
-                    <h3 className="text-gray-600 dark:text-gray-300 font-medium mb-3">
-                      🔥 Get Extra Votes
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {votePackages.map((pkg) => (
-                        <button
-                          key={pkg.priceId}
-                          onClick={() => handleBuyVuyVotes(pkg.priceId)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
-                        >
-                          {pkg.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Vote Packages */}
+      <div>
+        <h3 className="text-orange-400  dark:text-gray-300 font-medium mb-3">
+          🔥 <span className="bg-gray-800 p-1">Get Extra Votes</span> 
+        </h3>
+        <div className="flex flex-wrap gap-3">
+          {votePackages.map((pkg) => (
+            <button
+              key={pkg.priceId}
+              onClick={() => handleBuyVuyVotes(pkg.priceId)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+            >
+              {pkg.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
             {/* Leaderboard */}
             <div className="hidden  lg:block">

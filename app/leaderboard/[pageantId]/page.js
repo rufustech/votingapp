@@ -33,6 +33,77 @@ export default function RankingByPageant() {
   const [votesLeft, setVotesLeft] = useState(MAX_VOTES_PER_DAY);
   const router = useRouter();
 
+  
+  const handleFreeVote = async () => {
+    if (!selectedModel) return;
+
+    try {
+      const voteData = getVotesData();
+      if (voteData.votes >= MAX_VOTES_PER_DAY) {
+        throw new Error('Daily vote limit reached');
+      }
+
+      const response = await fetch(`${urls.url}/api/models/${selectedModel._id}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Vote failed');
+      }
+
+      // Update local storage and state
+      voteData.votes += 1;
+      localStorage.setItem('voteData', JSON.stringify(voteData));
+      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
+
+      // Update models list and resort
+      setModels(prevModels => 
+        prevModels.map(model => 
+          model._id === selectedModel._id 
+            ? { ...model, votes: model.votes + 1 }
+            : model
+        ).sort((a, b) => b.votes - a.votes)
+      );
+
+      setShowModal(false);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handlePaidVote = async (amount, votes) => {
+    if (!selectedModel) return;
+
+    try {
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error("Stripe failed to initialize");
+
+      const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modelId: selectedModel._id,
+          name: selectedModel.name,
+          votes,
+          amount,
+          cancelUrl: window.location.href
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to create session");
+
+      await stripe.redirectToCheckout({ sessionId: data.id });
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("Payment failed: " + err.message);
+    } finally {
+      setShowModal(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {

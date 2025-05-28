@@ -42,7 +42,7 @@ export default function LandingPage() {
         {/* Main Content */}
         <div className="space-y-8">
           {/* Header Section */}
-          <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-8">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -160,7 +160,7 @@ export default function LandingPage() {
             <div className="max-w-4xl mx-auto text-center">
               <h3 className="text-2xl font-bold mb-4">Want to Participate?</h3>
               <p className="text-purple-100 mb-6">
-                Join our upcoming beauty pageants and showcase your talent to the world.
+                Join our upcoming beauty pageants or events and showcase your talent to the world.
               </p>
               <Link href="/contact">
                 <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-medium hover:bg-purple-50 transition-colors">
