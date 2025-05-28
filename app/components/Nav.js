@@ -13,23 +13,33 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import Hero from "./Hero";
+
 
 const navigation = {
   categories: [],
   pages: [
     { name: "Home", href: "/" },
-    { name: "Ranking", href: "/ranking" },
+    { name: "Events", href: "/events" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ],
 };
 
+`
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+`
 export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-white">
+    <div className="bg-gray-500">
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop
           transition
@@ -82,14 +92,36 @@ export default function Nav() {
         </div>
       </Dialog>
 
-      <header className="relative bg-white shadow shadow-[#9c27b0]">
-        <div className="relative overflow-hidden bg-[#9c27b0] h-10 w-full">
-          <p className="absolute whitespace-nowrap text-white text-lg font-medium animate-marquee px-4">
-            BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-          </p>
-        </div>
+      <header className="relative bg-gray-50 shadow shadow-[#9c27b0]">
+<div className="relative overflow-hidden bg-[#9c27b0] h-10">
+  <div className="inline-flex whitespace-nowrap">
+    <div className="flex animate-[marquee_60s_linear_infinite]">
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+    </div>
+    <div className="flex absolute top-0 animate-[marquee_60s_linear_infinite] delay-[10s]">
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+      </span>
+    </div>
+  </div>
+</div>
 
-        <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        <nav aria-label="Top" className="mx-auto  max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
               <button

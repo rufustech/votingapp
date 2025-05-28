@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <div className="container mx-auto max-w-5xl mt-16 px-6 py-20">
+    <div className="container shadow mx-auto max-w-5xl mt-16 px-6 py-20">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold dark:text-gray-200 text-[#9c27b0] mb-4">About Us</h1>
         <p className="text-gray-600 dark:text-white text-lg max-w-3xl mx-auto">

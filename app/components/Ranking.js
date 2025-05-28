@@ -1,236 +1,145 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import VoteModal from '../components/Voting/VoteModal';
-import { loadStripe } from "@stripe/stripe-js";
-import { urls } from '../constants';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { urls } from "../constants";
+import { motion } from "framer-motion"; // Install framer-motion for animations
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-const MAX_VOTES_PER_DAY = 1;
-
-const getVotesData = () => {
-  if (typeof window === "undefined") return { date: "", votes: 0 };
-  const today = new Date().toISOString().split("T")[0];
-  const storedData = JSON.parse(localStorage.getItem("voteData")) || { date: today, votes: 0 };
-  if (storedData.date !== today) {
-    localStorage.setItem("voteData", JSON.stringify({ date: today, votes: 0 }));
-    return { date: today, votes: 0 };
-  }
-  return storedData;
-};
-
-const getPaidVotes = () => {
-  if (typeof window === "undefined") return 0;
-  return parseInt(localStorage.getItem("paidVotes") || "0", 10);
-};
-
-const setPaidVotes = (votes) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("paidVotes", votes);
-  }
-};
-
-function Ranking() {
-  const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [votesLeft, setVotesLeft] = useState(MAX_VOTES_PER_DAY);
-  const [paidVotes, setPaidVotesState] = useState(0);
-
-  // Stripe Success Callback Handler
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentSuccess = urlParams.get('payment_success');
-    const modelId = urlParams.get('modelId');
-    const votes = urlParams.get('votes');
-
-    if (paymentSuccess && modelId && votes) {
-      fetch(`${urls.url}/api/models/${modelId}/add-votes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ votes }),
-      })
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to update votes");
-          return res.json();
-        })
-        .then(data => {
-          console.log("✅ Votes updated via frontend", data);
-          setModels(prev =>
-            prev.map(m => m._id === modelId ? { ...m, votes: m.votes + parseInt(votes, 10) } : m)
-          );
-        })
-        .catch(err => {
-          console.error("❌ Error updating votes:", err.message);
-        });
-
-      // Clean up the URL
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
+export default function Events() {
+  const [pageants, setPageants] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   useEffect(() => {
-    fetch(`${urls.url}/api/models`)
-      .then(res => res.json())
-      .then(setModels)
-      .catch(err => console.error("Error fetching models:", err));
-  }, []);
-
-  useEffect(() => {
-    const voteData = getVotesData();
-    const paid = getPaidVotes();
-    setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
-    setPaidVotesState(paid);
-  }, []);
-
-  const sortedModels = [...models].sort((a, b) => b.votes - a.votes);
-
-  const openModal = (model) => {
-    setSelectedModel(model);
-    setShowModal(true);
-  };
-
-  const handleFreeVote = async () => {
-    if (!selectedModel || votesLeft <= 0) {
-      alert("You've reached your vote limit for today. Try again tomorrow.");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${urls.url}/api/models/${selectedModel._id}/vote`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.message || "Failed to vote.");
-        return;
+    const fetchPageants = async () => {
+      try {
+        const res = await fetch(`${urls.url}/api/pageants`);
+        const data = await res.json();
+        setPageants(data);
+      } catch (error) {
+        console.error("Failed to load pageants:", error);
       }
+    };
 
-      const voteData = getVotesData();
-      voteData.votes += 1;
-      localStorage.setItem("voteData", JSON.stringify(voteData));
+    fetchPageants();
+  }, []);
 
-      setVotesLeft(MAX_VOTES_PER_DAY - voteData.votes);
-      setModels(prev =>
-        prev.map(model =>
-          model._id === selectedModel._id ? { ...model, votes: model.votes + 1 } : model
-        )
-      );
-    } catch (err) {
-      console.error("Error voting:", err);
-    } finally {
-      setShowModal(false);
-    }
-  };
+  const filteredPageants = selectedStatus === "all" 
+    ? pageants 
+    : pageants.filter(pageant => pageant.status === selectedStatus);
 
-  const handlePaidVote = async (amount, votes) => {
-    if (!selectedModel) return;
-
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error("Stripe failed to load");
-
-       const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          modelId: selectedModel._id,
-          name: selectedModel.name,
-          votes,
-          amount,
-          cancelUrl: 'https://votes.co.zw/cancel'
-        }),
-      });
-
-      const data = await response.json();
-      console.log("Checkout session:", data);
-      if (!response.ok) throw new Error(data.error || "Failed to create session");
-
-      await stripe.redirectToCheckout({ sessionId: data.id });
-    } catch (err) {
-      console.error("❌ Stripe error:", err.message);
-      alert("Payment failed: " + err.message);
-    } finally {
-      setShowModal(false);
-    }
-  };
-
-  
   return (
-    <div className="container mx-auto mt-20 max-w-6xl px-4 py-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Rankings List */}
-      <div>
-        <h2 className="text-2xl font-bold dark:text-blue-500 text-[#9c27b0] mb-2">🏆 Leaderboard</h2>
-        <h3 className="mb-4 text-gray-600 dark:text-white text-lg">Free Votes Remaining: {votesLeft}</h3>
-        <ul className="space-y-4">
-          {sortedModels.map((model, index) => (
-            <li
-              key={model._id}
-              className="flex items-center justify-between bg-white shadow rounded-lg p-4 border-l-4 border-yellow-400"
-            >
-              <div className="flex items-center space-x-4">
-                <span className="text-3xl font-bold text-gray-300 w-6">{index + 1}.</span>
-                <img
-                  src={model.images[0] || ""}
-                  alt={model.name}
-                  className="w-12 h-12 object-cover rounded-full border"
-                />
-                <div>
-                  <p className="font-semibold text-gray-600">{model.name}</p>
-                  <p className="text-sm text-gray-500">Votes: {model.votes}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => openModal(model)}
-                className="bg-blue-600 text-white text-sm px-4 py-1 rounded hover:bg-blue-700"
-              >
-                VOTE
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        {showModal && selectedModel && (
-          <VoteModal
-            open={showModal}
-            handleClose={() => setShowModal(false)}
-            onFreeVote={handleFreeVote}
-            onPaidVote={handlePaidVote}
-          />
-        )}
+    <div className="min-h-screen bg-gray-50 pt-40 pb-20 px-4">
+      {/* Stats Section */}
+      <div className="max-w-7xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-purple-100">
+            <p className="text-sm text-gray-500">Total Pageants</p>
+            <h3 className="text-2xl font-bold text-purple-600">{pageants.length}</h3>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+            <p className="text-sm text-gray-500">Ongoing Events</p>
+            <h3 className="text-2xl font-bold text-green-600">
+              {pageants.filter(p => p.status === "ongoing").length}
+            </h3>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-blue-100">
+            <p className="text-sm text-gray-500">Upcoming Events</p>
+            <h3 className="text-2xl font-bold text-blue-600">
+              {pageants.filter(p => p.status === "upcoming").length}
+            </h3>
+          </div>
+        </div>
       </div>
 
-      {/* Ad Space */}
-      <div className="bg-gray-50 rounded-lg p-6 shadow-md border border-dashed border-gray-300 h-full flex flex-col space-y-6">
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-700 mb-1">📢 Sponsor This Space</h3>
-          <p className="text-sm text-gray-500">
-            Reach thousands of viewers by advertising your brand here.
-          </p>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-600 mb-4 md:mb-0">
+            Events to Vote
+          </h1>
+
+          {/* Filter Buttons */}
+          <div className="flex gap-2">
+            {["all", "ongoing", "upcoming", "past"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setSelectedStatus(status)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
+                  ${selectedStatus === status
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="w-full h-32 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center text-white font-semibold text-lg">
-            FashionWorld – Style Redefined
-          </div>
-          <div className="w-full h-32 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center text-white font-semibold text-lg">
-            FreshFarm Organics – Eat Clean, Live Well
-          </div>
-          <div className="w-full h-32 bg-gradient-to-r from-yellow-400 to-pink-500 rounded-lg flex items-center justify-center text-white font-semibold text-lg">
-            GlamUp Cosmetics – Be Your Best You
-          </div>
+        {/* Pageants Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredPageants.map((pageant, index) => (
+            <motion.div
+              key={pageant._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Link href={`/pageants/${pageant.pageantSlug}`}>
+                <div className="bg-white shadow-sm hover:shadow-md rounded-lg overflow-hidden transition-all duration-300 border border-gray-100">
+                  {/* Status Banner */}
+                  <div
+                    className={`w-full h-2 ${
+                      pageant.status === "ongoing"
+                        ? "bg-green-500"
+                        : pageant.status === "upcoming"
+                        ? "bg-blue-500"
+                        : "bg-red-500"
+                    }`}
+                  />
+                  
+                  <div className="p-6">
+                    <h2 className="text-lg font-semibold text-gray-700 mb-2 truncate">
+                      {pageant.name}
+                    </h2>
+                    
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          pageant.status === "ongoing"
+                            ? "bg-green-100 text-green-700"
+                            : pageant.status === "upcoming"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {pageant.status?.toUpperCase()}
+                      </span>
+                      
+                      <span className="text-sm text-gray-500">
+                        {new Date(pageant.startDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="text-center">
-          <button className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded">
-            Contact Us to Advertise
-          </button>
+        {/* Promotional Banner */}
+        <div className="mt-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-white">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Want to host your own pageant?</h3>
+              <p className="text-purple-100">Get in touch with us to learn more about hosting opportunities.</p>
+            </div>
+            <button className="mt-4 md:mt-0 px-6 py-2 bg-white text-purple-600 rounded-md font-medium hover:bg-purple-50 transition-colors">
+              Contact Us
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default Ranking;
