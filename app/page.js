@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Poppins } from "next/font/google";
 import LandingPage from "./components/LandingPage";
 import { urls } from "./constants";
+import { motion } from "framer-motion";
 
 const poppins = Poppins({
   weight: ["700"],
@@ -42,61 +43,70 @@ export default function Home() {
   };
 
   return (
-    <div className=" bg-gray-50 dark:bg-gray-900">
-      <main className="pt-24 px-4 pb-12">
-        <div className="container mt-6 mx-auto max-w-7xl">
-          <section className="grid lg:grid-cols-4 gap-6 mb-12">
-            {/* Main Content */}
-         <div 
-  className="lg:col-span-3 space-y-8"
-  style={{
-    backgroundImage: 'url("/pagentCrown.jpg")',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  }}
->
-  {/* Welcome Section */}
-  <div className="bg-white/10 dark:bg-gray-500 rounded-xl p-8 shadow-sm">
-    <h1 className={`${poppins.className} text-3xl  text-gray-200 mb-6`}>
-      Best Voting Platform
-    </h1>
-
-    <div className="space-y-6">
-      {/* Free Vote Info */}
-      <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-100 dark:border-purple-800">
-        <p className="text-purple-700 dark:text-purple-300 font-medium">
-          🎖️ Vote for your favorite contestant (1 free vote daily)
-        </p>
-      </div>
-
-      {/* Vote Packages */}
-      <div>
-        <h3 className="text-orange-400  dark:text-gray-300 font-medium mb-3">
-          🔥 <span className="bg-gray-800 p-1">Get Extra Votes</span> 
-        </h3>
-        <div className="flex flex-wrap gap-3">
-          {votePackages.map((pkg) => (
-            <button
-              key={pkg.priceId}
-              onClick={() => handleBuyVuyVotes(pkg.priceId)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <main className="pt-32 px-4 pb-12">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-4 gap-6">
+            {/* Hero Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="lg:col-span-3 relative rounded-2xl overflow-hidden"
+              style={{ height: 'fit-content' }}
             >
-              {pkg.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+              {/* Background Image with Overlay */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: 'url("/pagentCrown.jpg")',
+                  filter: 'brightness(0.7)'
+                }}
+              />
+              
+              {/* Content */}
+              <div className="relative z-10 p-6 md:p-8">
+                <h1 className={`${poppins.className} text-3xl text-white mb-6 drop-shadow-lg`}>
+                  Zimbabwe's Premier Voting Platform
+                </h1>
 
+                <div className="space-y-4">
+                  {/* Free Vote Card */}
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                    <p className="text-gray-800 font-medium flex items-center gap-2">
+                      🎖️ One Free Vote Daily
+                    </p>
+                  </div>
+
+                  {/* Vote Packages */}
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                    <h3 className="text-gray-800 font-medium mb-3 flex items-center gap-2">
+                      🔥 Premium Votes
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {votePackages.map((pkg) => (
+                        <button
+                          key={pkg.priceId}
+                          onClick={() => handleBuyVotes(pkg.priceId)}
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-lg"
+                        >
+                          {pkg.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Leaderboard */}
-            <div className="hidden  lg:block">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4.5">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="hidden lg:block"
+            >
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 border border-gray-100 dark:border-gray-700">
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                  <span>🏆</span> Top Contestants
+                  <span className="text-2xl">🏆</span> Top Contestants
                 </h2>
                 <div className="space-y-3">
                   {[...models]
@@ -107,26 +117,38 @@ export default function Home() {
                         key={model._id}
                         className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-400">
+                        <div className="flex items-center gap-3">
+                          <span className={`text-sm font-medium ${
+                            index === 0 ? 'text-yellow-500' :
+                            index === 1 ? 'text-gray-400' :
+                            index === 2 ? 'text-amber-600' :
+                            'text-gray-400'
+                          }`}>
                             #{index + 1}
                           </span>
-                          <span className="text-gray-700 dark:text-gray-300">
+                          <span className="text-gray-700 dark:text-gray-300 font-medium">
                             {model.name}
                           </span>
                         </div>
-                        <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                        <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
                           {model.votes}
                         </span>
                       </div>
                     ))}
                 </div>
               </div>
-            </div>
-          </section>
+            </motion.div>
+          </div>
 
-          {/* Models Section */}
-          <LandingPage />
+          {/* Landing Page Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-8"
+          >
+            <LandingPage />
+          </motion.div>
         </div>
       </main>
     </div>

@@ -9,19 +9,33 @@ export default function Events() {
   const [pageants, setPageants] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("all");
 
-  useEffect(() => {
-    const fetchPageants = async () => {
-      try {
-        const res = await fetch(`${urls.url}/api/pageants`);
-        const data = await res.json();
-        setPageants(data);
-      } catch (error) {
-        console.error("Failed to load pageants:", error);
-      }
-    };
+useEffect(() => {
+  const fetchPageants = async () => {
+    try {
+      const res = await fetch(`${urls.url}/api/pageants`);
+      const data = await res.json();
 
-    fetchPageants();
-  }, []);
+      // Define custom status order
+      const statusOrder = {
+        ongoing: 1,
+        upcoming: 2,
+        past: 3
+      };
+
+      // Sort pageants by status
+      const sorted = data.sort((a, b) => {
+        return (statusOrder[a.status.toLowerCase()] || 4) - (statusOrder[b.status.toLowerCase()] || 4);
+      });
+
+      setPageants(sorted);
+    } catch (error) {
+      console.error("Failed to load pageants:", error);
+    }
+  };
+
+  fetchPageants();
+}, []);
+
 
   const filteredPageants = selectedStatus === "all" 
     ? pageants 
@@ -45,7 +59,7 @@ export default function Events() {
           <div className="bg-white p-6 rounded-lg shadow-sm border border-blue-100">
             <p className="text-sm text-gray-500">Upcoming Events</p>
             <h3 className="text-2xl font-bold text-blue-600">
-              {pageants.filter(p => p.status === "upcoming").length}
+              {pageants.filter(p => p.status === "Upcoming").length}
             </h3>
           </div>
         </div>
@@ -60,7 +74,7 @@ export default function Events() {
 
           {/* Filter Buttons */}
           <div className="flex gap-2">
-            {["all", "ongoing", "upcoming", "past"].map((status) => (
+            {["all", "ongoing", "Upcoming", "past"].map((status) => (
               <button
                 key={status}
                 onClick={() => setSelectedStatus(status)}
@@ -92,9 +106,11 @@ export default function Events() {
                     className={`w-full h-2 ${
                       pageant.status === "ongoing"
                         ? "bg-green-500"
-                        : pageant.status === "upcoming"
-                        ? "bg-blue-500"
-                        : "bg-red-500"
+                        : pageant.status === "Upcoming"
+                        ? "bg-amber-500"
+                        : pageant.status === "past"
+                        ? "bg-red-500"
+                        : "bg-gray-300"
                     }`}
                   />
                   
@@ -104,17 +120,20 @@ export default function Events() {
                     </h2>
                     
                     <div className="flex items-center justify-between">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          pageant.status === "ongoing"
-                            ? "bg-green-100 text-green-700"
-                            : pageant.status === "upcoming"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {pageant.status?.toUpperCase()}
-                      </span>
+                     <span
+  className={`px-3 py-1 rounded-full text-xs font-medium ${
+    pageant.status === "ongoing"
+      ? "bg-green-100 text-green-700"
+      : pageant.status === "Upcoming"
+      ? "bg-amber-100 text-amber-700"
+      : pageant.status === "past"
+      ? "bg-red-100 text-red-700"
+      : "bg-gray-100 text-gray-700" // fallback for unknown status
+  }`}
+>
+  {pageant.status?.toUpperCase() || "UNKNOWN"}
+</span>
+
                       
                       <span className="text-sm text-gray-500">
                         {new Date(pageant.startDate).toLocaleDateString()}

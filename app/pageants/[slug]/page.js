@@ -81,10 +81,10 @@ export default function PageantModelsPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-purple-500 rounded-lg shadow-sm p-8 mb-12 max-w-2xl mx-auto text-center"
+          className="bg-white border border-purple-500 rounded-lg shadow-lg p-4 mb-12 max-w-2xl mx-auto text-center"
         >
-          <h1 className="text-3xl font-bold text-[#9c27b0] mb-4">{pageant?.name}</h1>
-          <div className="text-gray-600 space-y-2">
+          <h1 className="text-3xl font-bold text-[#9c27b0] mb-3">{pageant?.name}</h1>
+          <div className="text-gray-600 space-y-1">
             <p className="flex items-center justify-center gap-2">
               Status: 
               <span className={`font-semibold px-3 py-1 rounded-full text-sm ${
@@ -102,7 +102,7 @@ export default function PageantModelsPage() {
 
           <Link
             href={`/leaderboard/${pageant?._id}`}
-            className="inline-block mt-6 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+            className="inline-block mt-6 bg-gradient-to-r from-purple-500 to-purple-800 hover:from-purple-800 hover:to-purple-900 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
           >
             View Leaderboard
           </Link>

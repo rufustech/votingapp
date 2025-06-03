@@ -36,141 +36,113 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-4 px-4">
-      <div className="max-w-7xl mx-auto">
-       
-        {/* Main Content */}
-        <div className="space-y-8">
-          {/* Header Section */}
-          <div className="text-center max-w-3xl mx-auto mb-8">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl font-bold text-gray-800 mb-2"
-            >
-              Active Events to Vote
-            </motion.h1>
-            <p className="text-gray-600 mb-4">
-              Support your favorite contestants in these ongoing competitions
-            </p>
+ <div className="bg-gray-50 py-8">
+  <div className="max-w-5xl mx-auto px-4">
+    {/* Header */}
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center mb-8"
+    >
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Active Events</h1>
+      <p className="text-lg text-gray-600 mb-3">Vote for your favorite contestants</p>
+      <Link href="/events">
+        <button className="bg-purple-600 text-white px-10 py-2 text-md rounded-lg hover:bg-purple-700 transition-colors">
+          View All Events
+        </button>
+      </Link>
+    </motion.div>
+
+
+
+    {/* Pageants Grid */}
+    <div className="mb-8">
+      {ongoingPageants.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-6"
+        >
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-auto border border-purple-100">
+            <h3 className="text-gray-800 font-medium mb-2">No Active Events</h3>
+            <p className="text-gray-500 text-sm mb-3">Check back soon!</p>
             <Link href="/events">
-              <button className="bg-purple-600 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-purple-700 transition transform hover:scale-105">
-                View All Events
-              </button>
+              <span className="text-purple-600 text-sm hover:text-purple-700">
+                View All Events →
+              </span>
             </Link>
           </div>
-
-          {/* Ongoing Pageants Grid */}
-          {ongoingPageants.length === 0 ? (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-12"
+        </motion.div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ongoingPageants.map((pageant, index) => (
+            <motion.div
+              key={pageant._id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
             >
-              <div className="bg-white rounded-lg p-8 max-w-md mx-auto shadow-sm border border-purple-100">
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                  No Active Pageants
-                </h3>
-                <p className="text-gray-500 mb-4">
-                  Check back soon for upcoming competitions!
-                </p>
-                <Link href="/events">
-                  <button className="text-purple-600 hover:text-purple-700 font-medium">
-                    View All Events →
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {ongoingPageants.map((pageant, index) => (
-                <motion.div
-                  key={pageant._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link href={`/pageants/${pageant.pageantSlug}`}>
-                    <div className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-purple-100">
-                      {/* Status Banner */}
-                      <div className="h-2 bg-green-500" />
-                      
-                      <div className="p-6">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                          {pageant.name}
-                        </h2>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                            ONGOING
-                          </span>
-                          
-                          <div className="flex items-center text-gray-500 text-sm">
-                            <span>Ends: {new Date(pageant.endDate).toLocaleDateString()}</span>
-                          </div>
-                        </div>
-
-                        <button className="mt-4 w-full bg-purple-50 text-purple-600 px-4 py-2 rounded-md hover:bg-purple-100 transition-colors text-sm font-medium">
-                          View Contestants →
-                        </button>
-                      </div>
+              <Link href={`/pageants/${pageant.pageantSlug}`}>
+                <div className="bg-white rounded-lg overflow-hidden border border-purple-100 hover:shadow-sm transition-all duration-300">
+                  <div className="h-1 bg-green-500" />
+                  <div className="p-4">
+                    <h2 className="text-gray-800 font-semibold mb-2 line-clamp-1">
+                      {pageant.name}
+                    </h2>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs font-medium">
+                        ONGOING
+                      </span>
+                      <span className="text-gray-400 text-xs">
+                        Ends: {new Date(pageant.endDate).toLocaleDateString()}
+                      </span>
                     </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-           {/* Stats Overview */}
-        <div className="mb-12">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
-          >
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg shadow-sm text-white">
-              <p className="text-purple-100">Active Competitions</p>
-              <h3 className="text-3xl font-bold">{ongoingPageants.length}</h3>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-purple-100">
-              <p className="text-sm text-gray-500">Total Contestants</p>
-              <h3 className="text-2xl font-bold text-purple-600">
-                {/* You can add actual contestant count here */}
-                {ongoingPageants.length * 10}+
-              </h3>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-purple-100">
-              <p className="text-sm text-gray-500">Total Votes Cast</p>
-              <h3 className="text-2xl font-bold text-purple-600">1,000+</h3>
-            </div>
-          </motion.div>
-        </div>
-
-
-          {/* Promotional Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-8 text-white"
-          >
-            <div className="max-w-4xl mx-auto text-center">
-              <h3 className="text-2xl font-bold mb-4">Want to Participate?</h3>
-              <p className="text-purple-100 mb-6">
-                Join our upcoming beauty pageants or events and showcase your talent to the world.
-              </p>
-              <Link href="/contact">
-                <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-medium hover:bg-purple-50 transition-colors">
-                  Register Now
-                </button>
+                    <button className="w-full bg-purple-50 text-purple-800 px-3 py-1.5 rounded text-sm font-medium hover:bg-purple-100 transition-colors">
+                      View Contestants →
+                    </button>
+                  </div>
+                </div>
               </Link>
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </div>
+      )}
+    </div>
+
+        {/* Stats Cards */}
+    <div className="grid grid-cols-3 gap-3 mb-8">
+      <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-lg">
+        <p className="text-purple-100 text-xs">Active Events</p>
+        <h3 className="text-white text-xl font-bold">{ongoingPageants.length}</h3>
+      </div>
+      <div className="bg-white p-4 rounded-lg border border-purple-100">
+        <p className="text-gray-500 text-xs">Contestants</p>
+        <h3 className="text-purple-600 text-xl font-bold">{ongoingPageants.length * 10}+</h3>
+      </div>
+      <div className="bg-white p-4 rounded-lg border border-purple-100">
+        <p className="text-gray-500 text-xs">Total Votes</p>
+        <h3 className="text-purple-600 text-xl font-bold">1,000+</h3>
       </div>
     </div>
+
+    {/* Promotional Banner */}
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-center"
+    >
+      <h3 className="text-white font-medium mb-2">Want to Participate?</h3>
+      <p className="text-purple-100 text-sm mb-4">
+        Join our upcoming events and showcase your talent
+      </p>
+      <Link href="/contact">
+        <button className="bg-white text-purple-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-50 transition-colors">
+          Register Now
+        </button>
+      </Link>
+    </motion.div>
+  </div>
+</div>
+
   );
 }

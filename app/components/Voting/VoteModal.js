@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 
 const modalStyle = {
   position: "absolute",
@@ -26,7 +27,7 @@ const modalStyle = {
   textAlign: "center",
 };
 
-export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, isLoading }) {
+export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, model, isLoading }) {
   const [amount, setAmount] = useState('');
 
   const parsedAmount = parseFloat(amount);
@@ -38,6 +39,38 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, i
       return;
     }
     onPaidVote(parsedAmount, votes);
+  };
+
+  const handleEcoCashVote = async () => {
+    if (votes <= 0 || isNaN(parsedAmount)) {
+      alert("Please enter a valid amount (minimum $0.50)");
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/paynow/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          modelId: model._id,
+          amount: parsedAmount,
+          userEmail: 'test@example.com',
+        }),
+      });
+
+      const data = await res.json();
+      if (data.redirectUrl) {
+        localStorage.setItem("paynow_poll_url", data.pollUrl);
+        window.location.href = data.redirectUrl;
+      } else {
+        alert("Failed to initiate EcoCash payment.");
+      }
+    } catch (err) {
+      console.error("EcoCash Payment Error:", err);
+      alert("Something went wrong");
+    }
   };
 
   return (
@@ -104,7 +137,7 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, i
           sx={{ 
             py: 1.5, 
             fontWeight: "bold",
-            position: 'relative' // For loading spinner positioning
+            position: 'relative'
           }}
           disabled={isLoading}
         >
@@ -115,7 +148,7 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, i
                 sx={{ 
                   position: 'absolute',
                   left: '50%',
-                  marginLeft: '-12px' // Half of the size
+                  marginLeft: '-12px'
                 }} 
               />
               <span style={{ visibility: 'hidden' }}>Buy Votes via Stripe</span>
@@ -123,6 +156,18 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, i
           ) : (
             'Buy Votes via Stripe'
           )}
+        </Button>
+
+        <Button
+          onClick={handleEcoCashVote}
+          startIcon={<MobileFriendlyIcon />}
+          fullWidth
+          variant="contained"
+          color="warning"
+          sx={{ mt: 2, py: 1.5, fontWeight: "bold" }}
+          disabled={isLoading}
+        >
+          Buy Votes via EcoCash
         </Button>
 
         <Typography 
