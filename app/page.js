@@ -13,9 +13,9 @@ const poppins = Poppins({
 });
 
 const votePackages = [
-  { label: "$0.50 = 1 Vote", priceId: "price_5", votes: 10 },
-  { label: "$5 = 10 Votes", priceId: "price_10", votes: 25 },
-  { label: "See Pageants", priceId: "price_20", votes: 60 },
+  { label: "Transparent", priceId: "price_5", votes: 10 },
+  { label: "Fair", priceId: "price_10", votes: 25 },
+  { label: "Fun", priceId: "price_20", votes: 60 },
 ];
 
 export default function Home() {
@@ -71,16 +71,16 @@ export default function Home() {
 
                 <div className="space-y-4">
                   {/* Free Vote Card */}
-                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm">
                     <p className="text-gray-800 font-medium flex items-center gap-2">
                       🎖️ One Free Vote Daily
                     </p>
                   </div>
 
                   {/* Vote Packages */}
-                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm">
                     <h3 className="text-gray-800 font-medium mb-3 flex items-center gap-2">
-                      🔥 Premium Votes
+                      🔥 Premium Votes - Boost your favorite contestants
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                       {votePackages.map((pkg) => (
