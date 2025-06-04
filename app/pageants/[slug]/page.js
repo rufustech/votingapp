@@ -24,13 +24,18 @@ export default function PageantModelsPage() {
       try {
         setLoading(true);
         setError(null);
-        const pageantResponse = await fetch(`${urls.url}/api/pageants/slug/${slug}`);
-        if (!pageantResponse.ok) throw new Error('Failed to fetch pageant details');
+        const pageantResponse = await fetch(
+          `${urls.url}/api/pageants/slug/${slug}`
+        );
+        if (!pageantResponse.ok)
+          throw new Error("Failed to fetch pageant details");
         const pageantData = await pageantResponse.json();
         setPageant(pageantData);
 
-        const modelsResponse = await fetch(`${urls.url}/api/models/pageant/id/${pageantData._id}`);
-        if (!modelsResponse.ok) throw new Error('Failed to fetch models');
+        const modelsResponse = await fetch(
+          `${urls.url}/api/models/pageant/id/${pageantData._id}`
+        );
+        if (!modelsResponse.ok) throw new Error("Failed to fetch models");
         const modelsData = await modelsResponse.json();
         setModels(modelsData);
       } catch (err) {
@@ -57,7 +62,6 @@ export default function PageantModelsPage() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-16">
       <div className="max-w-6xl mx-auto mt-20 px-4">
-        
         {/* Header Section */}
         <div className="relative mb-6">
           <motion.div
@@ -69,21 +73,33 @@ export default function PageantModelsPage() {
               onClick={() => router.back()}
               className="p-2 flex w-22 shadow-lg bg-gradient-to-r from-purple-300 to-purple-400 hover:bg-gray-400 hover:text-white rounded-full transition-colors"
               title="Go back"
-            > 
-              <svg className="w-5 h-6 hover:text-white text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /> 
+            >
+              <svg
+                className="w-5 h-6 hover:text-white text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
               Back
             </button>
-<div>
-<h1 className="text-2xl font-semibold text-purple-700">
-              {pageant?.name || 'Pageant Details'}
-            </h1>
-             <h3 className="text-sm mt-2 text-gray-700">Below vote for your favorite <span className="italic text-purple-700 fornt-semibold">{pageant?.name || 'Amazing'} </span>  contestant </h3>
-</div>
-
-            
-           
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold text-purple-700">
+                {pageant?.name || "Pageant Details"}
+              </h1>
+              <h3 className="text-sm mt-2 text-gray-700 hidden sm:block">
+                Vote for your favorite contestant below
+              </h3>
+              {/* <span className="italic text-purple-700 font-semibold">
+                  {""} {pageant?.name || "Amazing"}{" "}
+                </span> */}
+            </div>
           </motion.div>
 
           {/* Quick Stats */}
@@ -94,17 +110,23 @@ export default function PageantModelsPage() {
           >
             <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
               <p className="text-xs text-gray-500 mb-1">Status</p>
-              <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                pageant?.status === 'ongoing' ? 'bg-green-100 text-green-700' :
-                pageant?.status === 'upcoming' ? 'bg-blue-100 text-blue-700' :
-                'bg-gray-100 text-gray-700'
-              }`}>
+              <span
+                className={`text-sm font-medium px-2 py-1 rounded-full ${
+                  pageant?.status === "ongoing"
+                    ? "bg-green-100 text-green-700"
+                    : pageant?.status === "upcoming"
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+              >
                 {pageant?.status?.toUpperCase()}
               </span>
             </div>
             <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
               <p className="text-xs text-gray-500 mb-1">Contestants</p>
-              <p className="text-lg font-semibold text-purple-600">{models.length}</p>
+              <p className="text-lg font-semibold text-purple-600">
+                {models.length}
+              </p>
             </div>
             <div className="bg-white p-3 rounded-lg border border-purple-100 shadow-sm">
               <p className="text-xs text-gray-500 mb-1">Duration</p>
@@ -125,8 +147,18 @@ export default function PageantModelsPage() {
               className="inline-flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
             >
               <span>View Leaderboard</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </Link>
           </motion.div>
@@ -141,8 +173,10 @@ export default function PageantModelsPage() {
           {models.length === 0 ? (
             <div className="bg-white rounded-lg p-6 text-center border border-gray-100 shadow-sm">
               <p className="text-gray-600">No contestants available yet</p>
-              {pageant?.status === 'upcoming' && (
-                <p className="text-sm text-gray-400 mt-1">Registration opens soon</p>
+              {pageant?.status === "upcoming" && (
+                <p className="text-sm text-gray-400 mt-1">
+                  Registration opens soon
+                </p>
               )}
             </div>
           ) : (

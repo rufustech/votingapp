@@ -59,14 +59,11 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           className="text-center py-6"
         >
+        
           <div className="bg-white rounded-lg p-6 max-w-sm mx-auto border border-purple-100">
             <h3 className="text-gray-800 font-medium mb-2">No Active Events</h3>
             <p className="text-gray-500 text-sm mb-3">Check back soon!</p>
-            <Link href="/events">
-              <span className="text-green-600 text-sm hover:text-green-700">
-                View All Events →
-              </span>
-            </Link>
+           
           </div>
           
         </motion.div>
@@ -80,7 +77,7 @@ export default function LandingPage() {
               transition={{ delay: index * 0.1 }}
             >
               <Link href={`/pageants/${pageant.pageantSlug}`}>
-                <div className="bg-gradient-to-r from-gray-50 to-gray-100 hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden border border-purple-100 hover:shadow-sm transition-all duration-300">
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden border-1 border-gray-300 shadow-md hover:shadow-md">
                   <div className="h-1 bg-green-500" />
                   <div className="p-3 ">
                     <h2 className="text-gray-800 font-semibold mb-2 line-clamp-1">
@@ -100,12 +97,16 @@ export default function LandingPage() {
                   </div>
                 </div>
               </Link>
+              
             </motion.div>
+            
           ))}
         </div>
+        
       )}
+      
     </div>
-
+  
         {/* Stats Cards */}
     <div className="grid grid-cols-3 gap-3 mb-8">
       <div className="bg-gradient-to-r from-green-300 to-green-400 p-4 rounded-lg">
@@ -120,6 +121,15 @@ export default function LandingPage() {
         <p className="text-gray-500 text-xs">Total Votes</p>
         <h3 className="text-purple-600 text-xl font-bold">1,000+</h3>
       </div>
+      <div className="text-center col-span-3 mt-4">
+
+       <Link href="/events">
+              <span className="text-green-700 shadow-md p-2 text-md hover:text-green-900">
+                View All Events →
+              </span>
+            </Link>
+      </div>
+
     </div>
 
     {/* Promotional Banner */}

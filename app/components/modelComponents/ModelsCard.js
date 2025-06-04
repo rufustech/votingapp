@@ -1,95 +1,108 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Collapse from "@mui/material/Collapse";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VoteModal from "../Voting/VoteModal";
 import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { urls } from '../../constants';
+import { urls } from "../../constants";
 
 // Initialize Stripe outside the component
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme }) => ({
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
+  marginLeft: "auto",
+  transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
   variants: [
     {
       props: ({ expand }) => !expand,
       style: {
-        transform: 'rotate(0deg)',
+        transform: "rotate(0deg)",
       },
     },
     {
       props: ({ expand }) => !!expand,
       style: {
-        transform: 'rotate(180deg)',
+        transform: "rotate(180deg)",
       },
     },
   ],
 }));
 
-export default function ModelsCard({_id, name, votes, pageantId, pageantName, onVote, bio, images} ) {
+export default function ModelsCard({
+  _id,
+  name,
+  votes,
+  pageantId,
+  pageantName,
+  onVote,
+  bio,
+  images,
+}) {
   const [expanded, setExpanded] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
- const handleFreeVote = async () => {
-  try {
-    const voteData = JSON.parse(localStorage.getItem("voteData")) || { date: "", votes: 0 };
-    const today = new Date().toISOString().split("T")[0];
+  const handleFreeVote = async () => {
+    try {
+      const voteData = JSON.parse(localStorage.getItem("voteData")) || {
+        date: "",
+        votes: 0,
+      };
+      const today = new Date().toISOString().split("T")[0];
 
-    if (voteData.date !== today) {
-      voteData.date = today;
-      voteData.votes = 0;
+      if (voteData.date !== today) {
+        voteData.date = today;
+        voteData.votes = 0;
+      }
+
+      if (voteData.votes >= 1) {
+        alert("You've reached your free vote limit today.");
+        return;
+      }
+
+      const res = await fetch(`${urls.url}/api/models/${_id}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Vote failed");
+      }
+
+      voteData.votes += 1;
+      localStorage.setItem("voteData", JSON.stringify(voteData));
+
+      alert("✅ Vote successful!");
+      setOpenModal(false);
+    } catch (err) {
+      console.error("Free vote error:", err.message);
+      alert("❌ Vote failed: " + err.message);
     }
+  };
 
-    if (voteData.votes >= 1) {
-      alert("You've reached your free vote limit today.");
-      return;
-    }
-
-    const res = await fetch(`${urls.url}/api/models/${_id}/vote`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.message || "Vote failed");
-    }
-
-    voteData.votes += 1;
-    localStorage.setItem("voteData", JSON.stringify(voteData));
-
-    alert("✅ Vote successful!");
-    setOpenModal(false);
-  } catch (err) {
-    console.error("Free vote error:", err.message);
-    alert("❌ Vote failed: " + err.message);
-  }
-};
-
-
-const handlePaidVote = async (amount, votes) => {
+  const handlePaidVote = async (amount, votes) => {
     setError(null);
     setIsLoading(true);
     try {
@@ -108,19 +121,22 @@ const handlePaidVote = async (amount, votes) => {
       }
 
       // Create checkout session
-      const response = await fetch(`${urls.url}/api/stripe/create-checkout-session`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          modelId: _id,
-          name,
-          votes,
-          amount,
-          cancelUrl: window.location.href
-        }),
-      });
+      const response = await fetch(
+        `${urls.url}/api/stripe/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            modelId: _id,
+            name,
+            votes,
+            amount,
+            cancelUrl: window.location.href,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -129,20 +145,18 @@ const handlePaidVote = async (amount, votes) => {
 
       const sessionData = await response.json();
 
-
       if (!sessionData || !sessionData.id) {
         throw new Error("Invalid session data received");
       }
 
       // Redirect to checkout
-      const { error } = await stripe.redirectToCheckout({ 
-        sessionId: sessionData.id  // Changed from data.id to sessionData.id
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionData.id, // Changed from data.id to sessionData.id
       });
-      
+
       if (error) {
         throw error;
       }
-
     } catch (error) {
       console.error("Payment error:", error);
       setError(error.message || "Payment failed. Please try again.");
@@ -150,7 +164,6 @@ const handlePaidVote = async (amount, votes) => {
       setIsLoading(false);
     }
   };
-
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -160,7 +173,10 @@ const handlePaidVote = async (amount, votes) => {
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: "#9c27b0", boxShadow: 3 , color: ""}} aria-label="model">
+          <Avatar
+            sx={{ bgcolor: "#9c27b0", boxShadow: 4, color: "" }}
+            aria-label="model"
+          >
             {name[0]}
           </Avatar>
         }
@@ -174,20 +190,20 @@ const handlePaidVote = async (amount, votes) => {
         slotProps={{
           subheader: {
             sx: {
-              textAlign: 'left',
-              fontStyle: 'italic',
-              color: 'black',
-              fontSize: '0.78rem',
+              textAlign: "left",
+              fontStyle: "italic",
+              color: "black",
+              fontSize: "0.78rem",
             },
           },
           title: {
             sx: {
-              textAlign: 'left',
-              fontWeight: 'bold',
-              color: 'slate.700',
-              fontSize: '0.78rem',
+              textAlign: "left",
+              fontWeight: "bold",
+              color: "slate.700",
+              fontSize: "0.78rem",
             },
-          }
+          },
         }}
       />
 
@@ -199,32 +215,32 @@ const handlePaidVote = async (amount, votes) => {
         sx={{
           width: 210,
           height: 260,
-          objectFit: 'cover',
+          objectFit: "cover",
           borderRadius: 2,
-          mx: "auto"
+          mx: "auto",
         }}
       />
 
       <CardContent>
         <Typography
           variant="body2"
-          sx={{ 
-            color: 'text.secondary', 
-            textAlign: 'center', 
-            fontWeight: 'medium', 
-            mb: 1 
+          sx={{
+            color: "text.secondary",
+            textAlign: "center",
+            fontWeight: "medium",
+            mb: 1,
           }}
         >
           Votes: {votes}
         </Typography>
 
         {error && (
-          <Typography 
-            color="error" 
-            sx={{ 
-              textAlign: 'center', 
+          <Typography
+            color="error"
+            sx={{
+              textAlign: "center",
               mb: 2,
-              fontSize: '0.875rem' 
+              fontSize: "0.875rem",
             }}
           >
             {error}
@@ -235,17 +251,21 @@ const handlePaidVote = async (amount, votes) => {
           variant="contained"
           color="secondary"
           fullWidth
-          sx={{ fontWeight: "bold", mt: 1, '&:hover': { 
-    transform: 'scale(1.05)', 
-    transition: 'transform 0.2s ease-in-out' 
-  } }}
+          sx={{
+            fontWeight: "bold",
+            mt: 1,
+            "&:hover": {
+              transform: "scale(1.05)",
+              transition: "transform 0.2s ease-in-out",
+            },
+          }}
           onClick={() => setOpenModal(true)}
           disabled={isLoading}
         >
           {isLoading ? (
             <CircularProgress size={24} color="inherit" />
           ) : (
-            'VOTE NOW'
+            "VOTE NOW"
           )}
         </Button>
 
@@ -280,21 +300,21 @@ const handlePaidVote = async (amount, votes) => {
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography 
-            variant="h6" 
-            sx={{ 
+          <Typography
+            variant="h6"
+            sx={{
               marginBottom: 1,
-              fontWeight: 'bold'
+              fontWeight: "bold",
             }}
           >
             Biography
           </Typography>
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              padding: '0.5rem',
-              color: 'text.primary',
-              lineHeight: 1.6
+          <Typography
+            variant="body1"
+            sx={{
+              padding: "0.5rem",
+              color: "text.primary",
+              lineHeight: 1.6,
             }}
           >
             {bio}
