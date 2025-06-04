@@ -16,7 +16,7 @@ export default function About() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-gray-50 to-white pt-16 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-100 rounded-full blur-3xl opacity-30" />

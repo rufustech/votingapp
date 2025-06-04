@@ -235,7 +235,10 @@ const handlePaidVote = async (amount, votes) => {
           variant="contained"
           color="secondary"
           fullWidth
-          sx={{ fontWeight: "bold", mt: 1 }}
+          sx={{ fontWeight: "bold", mt: 1, '&:hover': { 
+    transform: 'scale(1.05)', 
+    transition: 'transform 0.2s ease-in-out' 
+  } }}
           onClick={() => setOpenModal(true)}
           disabled={isLoading}
         >

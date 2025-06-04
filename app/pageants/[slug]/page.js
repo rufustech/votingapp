@@ -67,7 +67,7 @@ export default function PageantModelsPage() {
           >
             <button
               onClick={() => router.back()}
-              className="p-1 flex w-20 shadow-lg bg-gradient-to-r from-purple-300 to-purple-400 hover:bg-gray-400 hover:text-white rounded-full transition-colors"
+              className="p-2 flex w-22 shadow-lg bg-gradient-to-r from-purple-300 to-purple-400 hover:bg-gray-400 hover:text-white rounded-full transition-colors"
               title="Go back"
             > 
               <svg className="w-5 h-6 hover:text-white text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,9 +75,15 @@ export default function PageantModelsPage() {
               </svg>
               Back
             </button>
-            <h1 className="text-2xl font-semibold text-purple-700">
+<div>
+<h1 className="text-2xl font-semibold text-purple-700">
               {pageant?.name || 'Pageant Details'}
             </h1>
+             <h3 className="text-sm mt-2 text-gray-700">Below vote for your favorite <span className="italic text-purple-700 fornt-semibold">{pageant?.name || 'Amazing'} </span>  contestant </h3>
+</div>
+
+            
+           
           </motion.div>
 
           {/* Quick Stats */}
