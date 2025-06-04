@@ -46,7 +46,7 @@ const ExpandMore = styled((props) => {
   ],
 }));
 
-export default function ModelsCard({_id, name, votes, pageantId, onVote, bio, images} ) {
+export default function ModelsCard({_id, name, votes, pageantId, pageantName, onVote, bio, images} ) {
   const [expanded, setExpanded] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -164,7 +164,7 @@ const handlePaidVote = async (amount, votes) => {
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: "#9c27b0", boxShadow: 3 }} aria-label="model">
+          <Avatar sx={{ bgcolor: "#9c27b0", boxShadow: 3 , color: ""}} aria-label="model">
             {name[0]}
           </Avatar>
         }
@@ -174,14 +174,14 @@ const handlePaidVote = async (amount, votes) => {
           </IconButton>
         }
         title={name}
-        subheader={`Pageant: ${pageantId}`}
+        subheader={` ${pageantName}`}
         slotProps={{
           subheader: {
             sx: {
               textAlign: 'left',
               fontStyle: 'italic',
               color: 'black',
-              fontSize: '0.8rem',
+              fontSize: '0.78rem',
             },
           },
           title: {
@@ -189,7 +189,7 @@ const handlePaidVote = async (amount, votes) => {
               textAlign: 'left',
               fontWeight: 'bold',
               color: 'slate.700',
-              fontSize: '1.1rem',
+              fontSize: '0.78rem',
             },
           }
         }}
@@ -197,12 +197,12 @@ const handlePaidVote = async (amount, votes) => {
 
       <CardMedia
         component="img"
-        height="194"
+        height="180"
         image={images[0]}
         alt={name}
         sx={{
-          width: 200,
-          height: 240,
+          width: 210,
+          height: 260,
           objectFit: 'cover',
           borderRadius: 2,
           mx: "auto"
@@ -284,7 +284,7 @@ const handlePaidVote = async (amount, votes) => {
           <Typography 
             variant="h6" 
             sx={{ 
-              marginBottom: 2,
+              marginBottom: 1,
               fontWeight: 'bold'
             }}
           >

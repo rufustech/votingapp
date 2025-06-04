@@ -34,7 +34,7 @@ useEffect(() => {
   };
 
   fetchPageants();
-}, []);
+}, []); 
 
 
   const filteredPageants = selectedStatus === "all" 

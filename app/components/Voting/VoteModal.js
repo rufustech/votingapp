@@ -19,11 +19,11 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 360,
+  width: 300,
   bgcolor: "background.paper",
-  borderRadius: 3,
+  borderRadius: 1,
   boxShadow: 24,
-  p: 4,
+  p: 2,
   textAlign: "center",
 };
 
@@ -84,7 +84,7 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, m
         <Typography 
           id="vote-modal-title"
           variant="h6" 
-          sx={{ mb: 2, fontWeight: "bold", color: "black" }}
+          sx={{ mb: 1, fontWeight: "bold", color: "black" }}
         >
           Cast Your Vote
         </Typography>
@@ -92,9 +92,9 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, m
         <Typography 
           id="vote-modal-description"
           variant="body2" 
-          sx={{ color: "text.secondary", mb: 3 }}
+          sx={{ color: "text.secondary", mb: 1 }}
         >
-          Choose how you want to vote for your favorite contestant.
+          Support <strong>{model}</strong> with your vote!
         </Typography>
 
         <Button
@@ -103,7 +103,7 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, m
           fullWidth
           variant="contained"
           color="primary"
-          sx={{ mb: 2, py: 1.5, fontWeight: "bold" }}
+          sx={{ mb: 0, py: 1.5, fontWeight: "bold" }}
           disabled={isLoading}
         >
           Free Vote (1/day)
@@ -136,7 +136,8 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, m
           color="success"
           sx={{ 
             py: 1.5, 
-            fontWeight: "bold",
+            fontWeight: "",
+            fontSize: "0.81rem",
             position: 'relative'
           }}
           disabled={isLoading}
@@ -144,17 +145,17 @@ export default function VoteModal({ open, handleClose, onFreeVote, onPaidVote, m
           {isLoading ? (
             <>
               <CircularProgress 
-                size={24} 
+                size={20} 
                 sx={{ 
                   position: 'absolute',
                   left: '50%',
                   marginLeft: '-12px'
                 }} 
               />
-              <span style={{ visibility: 'hidden' }}>Buy Votes via Stripe</span>
+              <span style={{ visibility: 'hidden' }}>Buy Votes VISA/MASTERCARD</span>
             </>
           ) : (
-            'Buy Votes via Stripe'
+            'Buy Votes VISA/MASTERCARD'
           )}
         </Button>
 
