@@ -52,7 +52,6 @@ useEffect(() => {
   fetch(`${urls.url}/api/pageants`)
     .then((res) => res.json())
     .then((data) => {
-      console.log("Fetched pageants:", data); // Debugging line
       setPageants(data);
     })
     .catch((error) => console.error("Error fetching pageants:", error));
@@ -76,22 +75,20 @@ useEffect(() => {
         formData.append("images", file);
       });
   
-      console.log("Uploading files:", files);
-  
       const res = await fetch(`${urls.url}/api/upload`, {
         method: "POST",
         body: formData,
       });
   
       const text = await res.text(); // Read raw response
-      console.log("Raw response text:", text);
+
   
       if (!res.ok) {
         throw new Error(`Server error: ${res.status}`);
       }
   
       const data = JSON.parse(text);
-      console.log("Parsed JSON:", data);
+
   
       if (!data.success || !Array.isArray(data.images)) {
         throw new Error("Upload response missing images.");

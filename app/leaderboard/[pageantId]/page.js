@@ -108,15 +108,13 @@ export default function RankingByPageant() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching data for pageant:', pageantId);
-
+      
         // Fetch models first
         const modelsResponse = await fetch(`${urls.url}/api/models/pageant/id/${pageantId}`);
         if (!modelsResponse.ok) {
           throw new Error('Failed to fetch models');
         }
         const modelsData = await modelsResponse.json();
-        console.log('Models fetched:', modelsData);
         setModels(modelsData.sort((a, b) => b.votes - a.votes));
 
         // Fetch pageant details
@@ -125,7 +123,6 @@ export default function RankingByPageant() {
           throw new Error('Failed to fetch pageant details');
         }
         const pageantData = await pageantResponse.json();
-        console.log('Pageant fetched:', pageantData);
         setPageant(pageantData);
 
         // Set initial votes left
@@ -147,13 +144,7 @@ export default function RankingByPageant() {
 
   // Log state changes
   useEffect(() => {
-    console.log('Current state:', {
-      loading,
-      error,
-      modelsCount: models.length,
-      pageant,
-      votesLeft
-    });
+
   }, [loading, error, models, pageant, votesLeft]);
 
   if (loading) {

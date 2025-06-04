@@ -44,8 +44,7 @@ function Models() {
                     throw new Error("Failed to fetch models");
                 }
                 const data = await response.json();
-                console.log(data);
-                
+                            
                 setModels(data);
             } catch (error) {
                 console.error("Error fetching models:", error);
@@ -94,15 +93,14 @@ function Models() {
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('payment_success')) {
-    console.log('Payment successful, refreshing models...');
-    
+   
     const fetchAndUpdateModels = async () => {
       try {
         const response = await fetch(`${urls.url}/api/models`);
         if (response.ok) {
           const data = await response.json();
           setModels(data);
-          console.log('Models refreshed successfully');
+  
         } else {
           console.error('Failed to refresh models');
         }

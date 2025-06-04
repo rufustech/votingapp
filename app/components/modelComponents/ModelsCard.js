@@ -97,13 +97,9 @@ const handlePaidVote = async (amount, votes) => {
       if (isNaN(amount) || isNaN(votes)) {
         throw new Error("Invalid amount or vote count");
       }
-      console.log("💸 Creating checkout session:", {
-        modelId: _id,
-        name,
-        votes,
-        amount,
-      });
-      // Get Stripe instance
+
+      // Get Stripe instance.log
+
       const stripe = await stripePromise;
       if (!stripe) {
         console.error("Stripe failed to initialize");
@@ -132,7 +128,7 @@ const handlePaidVote = async (amount, votes) => {
       }
 
       const sessionData = await response.json();
-      console.log("Created session:", sessionData);
+
 
       if (!sessionData || !sessionData.id) {
         throw new Error("Invalid session data received");
