@@ -204,7 +204,7 @@ export default function RankingByPageant() {
         </Link>
       </div>
 
-      <h2 className="text-2xl font-bold text-[#9c27b0] mb-2">
+      <h2 className="text-2xl text-center md:text-right font-bold text-[#9c27b0] mb-2">
         🏆 {pageant?.name || 'Pageant'} Leaderboard
       </h2>
         <h3 className="mb-4 text-gray-600 text-lg">Free Votes Remaining: {votesLeft}</h3>

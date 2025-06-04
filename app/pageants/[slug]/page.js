@@ -140,7 +140,7 @@ export default function PageantModelsPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 mx-3 md:mx-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {models.map((model, index) => (
                 <motion.div
                   key={model._id}

@@ -121,7 +121,7 @@ function ModelMore() {
       <h2 className="text-center text-[#9c27b0] text-lg font-semibold mb-4">
         Free Votes Left: {votesLeft}
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {models.length > 0 ? (
           models.map((model) => (
           <ModelsCard
