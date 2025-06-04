@@ -65,34 +65,34 @@ export default function Home() {
               
               {/* Content */}
               <div className="relative z-10 p-6 md:p-8">
-                <h1 className={`${poppins.className} text-3xl text-white mb-6 drop-shadow-lg`}>
-                  Zimbabwe's Premier Voting Platform
+                <h1 className={`${poppins.className}  text-3xl text-gray-800 mb-6 drop-shadow-lg`}>
+                 <span className="bg-white/80 backdrop-blur-sm p-1 rounded">Premier Voting Platform</span> 
                 </h1>
 
                 <div className="space-y-4">
                   {/* Free Vote Card */}
-                  <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                  <div className=" rounded-lg p-4 shadow-sm">
                     <p className="text-gray-800 font-medium flex items-center gap-2">
-                      🎖️ One Free Vote Daily
+                      <span className="bg-white/80 backdrop-blur-sm p-2 rounded">🎖️ One Free Vote Daily</span>
                     </p>
                   </div>
 
                   {/* Vote Packages */}
-                  <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm">
+                  <div className="  rounded-lg p-4 shadow-sm">
                     <h3 className="text-gray-800 font-medium mb-3 flex items-center gap-2">
-                      🔥 Premium Votes - Boost your favorite contestants
+                     <span className="bg-white/80 backdrop-blur-sm p-2 rounded">🔥 Premium Votes - Boost your favorite contestants</span> 
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                       {votePackages.map((pkg) => (
                         <button
                           key={pkg.priceId}
                           onClick={() => handleBuyVotes(pkg.priceId)}
-                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-lg"
+                          className="bg-purple-100 hover:bg-purple-700 text-black px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-lg"
                         >
                           {pkg.label}
                         </button>
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

@@ -67,7 +67,7 @@ export default function PageantModelsPage() {
           >
             <button
               onClick={() => router.back()}
-              className="p-2 flex w-20 shadow-lg bg-gray-200 hover:bg-gray-400 hover:text-white rounded-full transition-colors"
+              className="p-1 flex w-20 shadow-lg bg-gradient-to-r from-purple-300 to-purple-400 hover:bg-gray-400 hover:text-white rounded-full transition-colors"
               title="Go back"
             > 
               <svg className="w-5 h-6 hover:text-white text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ export default function PageantModelsPage() {
               </svg>
               Back
             </button>
-            <h1 className="text-2xl font-semibold text-gray-700">
+            <h1 className="text-2xl font-semibold text-purple-700">
               {pageant?.name || 'Pageant Details'}
             </h1>
           </motion.div>
@@ -116,7 +116,7 @@ export default function PageantModelsPage() {
           >
             <Link
               href={`/leaderboard/${pageant?._id}`}
-              className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
+              className="inline-flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow"
             >
               <span>View Leaderboard</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +140,7 @@ export default function PageantModelsPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 mx-3 md:mx-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 mx-3 md:mx-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {models.map((model, index) => (
                 <motion.div
                   key={model._id}

@@ -7,7 +7,7 @@ import { motion } from "framer-motion"; // Install framer-motion for animations
 
 export default function Events() {
   const [pageants, setPageants] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("ongoing");
 
 useEffect(() => {
   const fetchPageants = async () => {
@@ -42,7 +42,7 @@ useEffect(() => {
     : pageants.filter(pageant => pageant.status === selectedStatus);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-40 pb-20 px-4">
+    <div className="min-h-screen bg-gray-50 pt-40 pb-2 px-4">
       {/* Stats Section */}
       <div className="max-w-7xl mx-auto mb-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -50,9 +50,9 @@ useEffect(() => {
             <p className="text-sm text-gray-500">Total Pageants</p>
             <h3 className="text-2xl font-bold text-purple-600">{pageants.length}</h3>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
-            <p className="text-sm text-gray-500">Ongoing Events</p>
-            <h3 className="text-2xl font-bold text-green-600">
+          <div className="bg-gradient-to-r from-gray-100 to-gray-200 p-6 rounded-lg shadow-sm border border-green-100">
+            <p className="text-md text-gray-400">Ongoing Events</p>
+            <h3 className="text-2xl font-bold text-green-800">
               {pageants.filter(p => p.status === "ongoing").length}
             </h3>
           </div>
@@ -74,11 +74,11 @@ useEffect(() => {
 
           {/* Filter Buttons */}
           <div className="flex gap-2">
-            {["all", "ongoing", "Upcoming", "past"].map((status) => (
+            {["ongoing", "Upcoming", "past", "all"].map((status) => (
               <button
                 key={status}
                 onClick={() => setSelectedStatus(status)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
+                className={`px-4 py-2 rounded-sm text-sm font-medium transition-colors
                   ${selectedStatus === status
                     ? "bg-purple-600 text-white"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -100,10 +100,10 @@ useEffect(() => {
               transition={{ delay: index * 0.1 }}
             >
               <Link href={`/pageants/${pageant.pageantSlug}`}>
-                <div className="bg-white shadow-sm hover:shadow-md rounded-lg overflow-hidden transition-all duration-300 border border-gray-100">
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 hover:scale-105 transition-transform duration-500 shadow-sm hover:shadow-md rounded-lg overflow-hidden transition-all duration-300 border border-gray-100">
                   {/* Status Banner */}
                   <div
-                    className={`w-full h-2 ${
+                    className={`w-full h-1.5 ${
                       pageant.status === "ongoing"
                         ? "bg-green-500"
                         : pageant.status === "Upcoming"

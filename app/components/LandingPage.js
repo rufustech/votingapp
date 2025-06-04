@@ -46,11 +46,7 @@ export default function LandingPage() {
     >
       <h1 className="text-3xl font-bold text-gray-600 mb-2">Active Events</h1>
       <p className="text-lg text-gray-600 mb-3"></p>
-      <Link href="/events">
-        <button className="bg-purple-600 text-white px-10 py-2 text-md rounded-lg hover:bg-purple-700 transition-colors">
-          View All Events
-        </button>
-      </Link>
+
     </motion.div>
 
 
@@ -67,11 +63,12 @@ export default function LandingPage() {
             <h3 className="text-gray-800 font-medium mb-2">No Active Events</h3>
             <p className="text-gray-500 text-sm mb-3">Check back soon!</p>
             <Link href="/events">
-              <span className="text-purple-600 text-sm hover:text-purple-700">
+              <span className="text-green-600 text-sm hover:text-green-700">
                 View All Events →
               </span>
             </Link>
           </div>
+          
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,9 +80,9 @@ export default function LandingPage() {
               transition={{ delay: index * 0.1 }}
             >
               <Link href={`/pageants/${pageant.pageantSlug}`}>
-                <div className="bg-white rounded-lg overflow-hidden border border-purple-100 hover:shadow-sm transition-all duration-300">
+                <div className="bg-gradient-to-r from-gray-50 to-gray-100 hover:scale-105 transition-transform duration-500 rounded-lg overflow-hidden border border-purple-100 hover:shadow-sm transition-all duration-300">
                   <div className="h-1 bg-green-500" />
-                  <div className="p-4">
+                  <div className="p-3 ">
                     <h2 className="text-gray-800 font-semibold mb-2 line-clamp-1">
                       {pageant.name}
                     </h2>
@@ -97,7 +94,7 @@ export default function LandingPage() {
                         Ends: {new Date(pageant.endDate).toLocaleDateString()}
                       </span>
                     </div>
-                    <button className="w-full bg-purple-50 text-purple-800 px-3 py-1.5 rounded text-sm font-medium hover:bg-purple-100 transition-colors">
+                    <button className="w-full shadow hover:scale-95 bg-green-50 text-green-800 px-3 py-1.5 rounded text-sm font-medium hover:bg-green-100 transition-colors">
                       View Contestants →
                     </button>
                   </div>
@@ -111,9 +108,9 @@ export default function LandingPage() {
 
         {/* Stats Cards */}
     <div className="grid grid-cols-3 gap-3 mb-8">
-      <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-lg">
-        <p className="text-purple-100 text-xs">Active Events</p>
-        <h3 className="text-white text-xl font-bold">{ongoingPageants.length}</h3>
+      <div className="bg-gradient-to-r from-green-300 to-green-400 p-4 rounded-lg">
+        <p className="text-gray-500 text-xs">Active Events</p>
+        <h3 className="text-gray-500 text-xl font-bold">{ongoingPageants.length}</h3>
       </div>
       <div className="bg-white p-4 rounded-lg border border-purple-100">
         <p className="text-gray-500 text-xs">Contestants</p>
@@ -129,7 +126,7 @@ export default function LandingPage() {
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-center"
+      className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg p-6 text-center"
     >
       <h3 className="text-white font-medium mb-2">Want to Participate?</h3>
       <p className="text-purple-100 text-sm mb-4">
