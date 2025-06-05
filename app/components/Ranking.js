@@ -14,7 +14,6 @@ export default function Events() {
       try {
         const res = await fetch(`${urls.url}/api/pageants`);
         const data = await res.json();
-
         // Define custom status order
         const statusOrder = {
           ongoing: 1,
@@ -45,11 +44,11 @@ export default function Events() {
       : pageants.filter((pageant) => pageant.status === selectedStatus);
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-40 pb-2 px-4">
+    <div className="bg-gray-50 dark:bg-gray-900 pt-40 pb-2 px-4">
       {/* Main Content */}
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-          <h1 className="text-2xl font-semibold text-green-600 mb-4 md:mb-0">
+          <h1 className="text-2xl font-semibold dark:text-white text-green-600 mb-4 md:mb-0">
             Events to Vote
           </h1>
 
@@ -128,7 +127,7 @@ export default function Events() {
         </div>
 
         {/* Stats Section */}
-        <div className="max-w-7xl mx-auto my-12">
+        <div className="max-w-7xl mx-auto my-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-purple-100">
               <p className="text-sm text-gray-500">Total Pageants</p>
@@ -152,7 +151,7 @@ export default function Events() {
         </div>
 
         {/* Promotional Banner */}
-        <div className="mt-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-white">
+        <div className="mt-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg mb-10 p-6 text-white">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div>
               <h3 className="text-xl font-bold mb-2">

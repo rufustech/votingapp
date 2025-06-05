@@ -1,19 +1,14 @@
 "use client";
 
-import {  useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
   PopoverGroup,
-
 } from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-
 
 const navigation = {
   categories: [],
@@ -34,12 +29,12 @@ const navigation = {
     transform: translateX(-100%);
   }
 }
-`
+`;
 export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-gray-500">
+    <div className="bg-gray-500 dark:bg-gray-900">
       <Dialog open={open} onClose={setOpen} className="relative z-40 lg:hidden">
         <DialogBackdrop
           transition
@@ -63,28 +58,33 @@ export default function Nav() {
               </button>
             </div>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+            <div className="space-y-6 border-t  border-gray-200 px-4 py-6">
               {navigation.pages.map((page) => (
                 <Link
                   key={page.name}
                   href={page.href}
-                  className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                  className="flex items-center text-sm font-medium dark:text-white text-gray-700 hover:text-gray-800"
                   onClick={() => setOpen(false)}
                 >
                   {page.name}
                 </Link>
               ))}
-           
             </div>
 
             <div className="border-t border-gray-200 px-4 py-6">
-              <Link href="/" className="-m-2 flex items-center p-2" onClick={() => setOpen(false)}>
+              <Link
+                href="/"
+                className="-m-2 flex items-center p-2"
+                onClick={() => setOpen(false)}
+              >
                 <img
                   alt="Rockers Island Logo"
                   src="/rockersIsland.jpeg"
                   className="block h-auto w-5 shrink-0"
                 />
-                <span className="ml-3 block text-base font-medium text-gray-900">HOME</span>
+                <span className="ml-3 block text-base font-medium text-gray-900">
+                  HOME
+                </span>
                 <span className="sr-only">Navigate to Home</span>
               </Link>
             </div>
@@ -92,37 +92,39 @@ export default function Nav() {
         </div>
       </Dialog>
 
-      <header className="relative bg-gray-50 shadow shadow-[#9c27b0]">
-<div className="relative overflow-hidden bg-[#9c27b0] h-10">
-  <div className="inline-flex whitespace-nowrap">
-    <div className="flex animate-[marquee_60s_linear_infinite]">
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-    </div>
-    <div className="flex absolute top-0 animate-[marquee_60s_linear_infinite] delay-[10s]">
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-      <span className="text-white text-lg font-medium py-2 px-4 mx-4">
-        BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
-      </span>
-    </div>
-  </div>
-</div>
+      <header className="relative bg-gray-50 dark:bg-gray-900  shadow shadow-[#9c27b0]">
+        <div className="relative overflow-hidden bg-[#9c27b0] h-10">
+          <div className="inline-flex whitespace-nowrap">
+            <div className="flex animate-[marquee_60s_linear_infinite]">
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+            </div>
+            <div className="flex absolute top-0 animate-[marquee_60s_linear_infinite] delay-[10s]">
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+              <span className="text-white text-lg font-medium py-2 px-4 mx-4">
+                BOOST VOTES FOR YOUR FAVORITE CONTESTANTS !!!
+              </span>
+            </div>
+          </div>
+        </div>
 
-
-        <nav aria-label="Top" className="mx-auto  max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="border-b border-gray-200">
+        <nav
+          aria-label="Top"
+          className="mx-auto  max-w-7xl px-4 sm:px-6 lg:px-8"
+        >
+          <div className="border-b  border-gray-200">
             <div className="flex h-16 items-center">
               <button
                 type="button"
@@ -151,7 +153,7 @@ export default function Nav() {
                     <Link
                       key={page.name}
                       href={page.href}
-                      className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="flex items-center text-sm font-medium dark:text-lg dark:text-gray-100 dark:hover:text-gray-300 text-gray-700 hover:text-gray-800"
                     >
                       {page.name}
                     </Link>
